@@ -2,7 +2,7 @@
 session_start();
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+$roles_autorises = ['admin', 'patron', 'gérant'];  // adapter selon la page
 include "auth_check.php";
 
 include "header.php";
@@ -21,8 +21,23 @@ if (mysqli_num_rows($order_res) == 0) {
 }
 $order = mysqli_fetch_assoc($order_res);
 
+// Ajout de item_comment dans la requête
 $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $order_id");
 ?>
+
+<style>
+    /* Style pour les commentaires */
+    .item-comment {
+        font-size: 0.9em;
+        color: #a40301;
+        font-style: italic;
+        display: block;
+        margin-top: 5px;
+    }
+    .comment-icon {
+        margin-right: 5px;
+    }
+</style>
 
 <div class="breadcrumbs">
     <div class="col-sm-4">
@@ -59,6 +74,7 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
                         <thead>
                             <tr>
                                 <th>Plat</th>
+                                <th>Instructions spéciales</th>
                                 <th>Quantité</th>
                                 <th>Prix Unitaire (€)</th>
                                 <th>Sous-total (€)</th>
@@ -69,15 +85,26 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
                             if ($items_res && mysqli_num_rows($items_res) > 0) {
                                 while ($item = mysqli_fetch_assoc($items_res)) {
                                     $subtotal = $item['quantity'] * $item['price'];
+                                    $comment = isset($item['item_comment']) && trim($item['item_comment']) !== '' 
+                                        ? htmlspecialchars($item['item_comment']) 
+                                        : '';
+                                    
                                     echo "<tr>";
                                     echo "<td>" . htmlspecialchars($item['food_name']) . "</td>";
+                                    echo "<td>";
+                                    if ($comment) {
+                                        echo '<span class="item-comment"><i class="comment-icon"></i>' . $comment . '</span>';
+                                    } else {
+                                        echo '<span style="color: #6c757d;">Aucune</span>';
+                                    }
+                                    echo "</td>";
                                     echo "<td>" . (int)$item['quantity'] . "</td>";
                                     echo "<td>" . number_format($item['price'], 2) . "</td>";
                                     echo "<td>" . number_format($subtotal, 2) . "</td>";
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='4'>Aucun article trouvé.</td></tr>";
+                                echo "<tr><td colspan='5'>Aucun article trouvé.</td></tr>";
                             }
                             ?>
                         </tbody>

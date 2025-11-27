@@ -170,11 +170,27 @@
 }
 
 @media only screen and (max-width: 1023px) {
-  .fixed-header .sticky-header,
+  /* ************************************************************ */
+  /* --- CORRECTION STICKY HEADER POUR MOBILE --- */
+  /* --- Le rend visible sur mobile/tablette (avant il était 'display: none;') --- */
+  /* ************************************************************ */
+  .fixed-header .sticky-header {
+    display: block !important;
+    position: fixed; /* Assure qu'il reste collé */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999; /* Assure qu'il est au-dessus du contenu */
+    background-color: #ffffff; /* Couleur de fond blanche pour être conforme à la version PC */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Ombre pour le détacher du contenu */
+  }
+
+  /* La règle originale est modifiée pour ne cacher que les autres éléments, le sticky-header ayant été traité ci-dessus. */
   .menu-section-one .inner-container::before,
   .main-header .outer-box .btn-box {
     display: none;
   }
+
   .header-style-two .header-upper .logo-outer {
     margin-top: 0px;
   }
@@ -339,7 +355,7 @@
 
   .header-style-two {
     position: relative;
-    background-color: #222222;
+    background-color: red;
   }
 
   .header-style-two .header-upper {
@@ -403,10 +419,64 @@
 }
 
 @media only screen and (max-width: 991px) {
-  .main-header .header-upper .logo-outer {
-    margin-bottom: 0px;
-    float: none;
+  
+  /* ************************************************************ */
+  /* --- CORRECTION LOGO ET HAMBURGER (ÉGALITÉ DE TAILLE/LIGNE) --- */
+  /* --- Correction : Fixer la position verticale du logo en mode mobile --- */
+  /* ************************************************************ */
+  
+  /* 1. Activer Flexbox pour l'alignement vertical */
+  .main-header .header-upper .header-mobile-content {
+      display: flex;
+      justify-content: space-between; 
+      align-items: center; /* ALIGNEMENT VERTICAL PRINCIPAL (le centre) */
+      padding: 10px 15px; 
   }
+
+  /* 2. Style du conteneur du logo: ajout de 'position: relative' et 'z-index' */
+  .main-header .header-upper .logo-outer {
+      float: none; 
+      margin-bottom: 0px;
+      padding: 0;
+      position: relative; /* Clé pour le positionnement */
+      z-index: 40; /* Assure que le logo est au-dessus du menu */
+  }
+  
+  /* 3. Définir la hauteur fixe du logo et suppression de la marge négative */
+  .main-header .logo-outer .logo .header-logo {
+      height: 60px; /* HAUTEUR DÉFINIE POUR LE LOGO */
+      width: auto;
+      margin-top: 0px !important; /* CORRIGÉ: Supprime la marge négative qui provoquait le mouvement */
+  }
+
+  /* L'ancienne règle `logo` est corrigée ci-dessous */
+  .main-header .logo-outer .logo {
+      margin-top: 0px !important; /* CORRIGÉ: S'assurer que le conteneur du logo ne bouge pas */
+  }
+  
+  /* 4. Style du conteneur du menu (nav-outer) */
+  .main-header .header-upper .nav-outer {
+      position: relative;
+      z-index: 35; 
+      float: none; 
+      margin-top: 0px !important; /* CORRIGÉ: Supprime la marge négative */
+      padding: 0;
+      display: flex; 
+      align-items: center; 
+  }
+  
+  /* 5. Ajustement du bouton hamburger */
+  .navbar-toggler {
+      position: relative;
+      top: 0px; 
+      height: 60px; /* HAUTEUR ÉGALE AU LOGO */
+      padding: 5px 10px; 
+  }
+  
+  /* ************************************************************ */
+  /* --- FIN CORRECTION (991px) --- */
+  /* ************************************************************ */
+  
   .about-section-two .images-column {
     margin-bottom: 0px;
   }
@@ -415,15 +485,6 @@
   }
   .header-style-two .header-upper .logo-outer {
     margin-top: 0px;
-  }
-  .main-header .header-upper .nav-outer {
-    position: relative;
-    z-index: 35;
-    margin-top: -60px;
-  }
-  .navbar-toggler {
-    position: relative;
-    top: -10px;
   }
   .main-footer .footer-widget {
     position: relative;
@@ -444,7 +505,8 @@
     top: 2px;
   }
   .main-header.header-style-two .header-upper .nav-outer {
-    margin-top: -70px;
+    /* CORRECTION : Remplacer margin-top: -70px; par 0px */
+    margin-top: 0px !important;
   }
 }
 
@@ -466,7 +528,8 @@
     padding: 10px 0px;
   }
   .main-header .header-upper .nav-outer {
-    margin-top: -30px;
+    /* CORRECTION : Remplacer margin-top: -30px; */
+    margin-top: 0px !important; /* CORRIGÉ: Assure que le nav-outer ne remonte pas */
     width: 100%;
   }
   .main-header.header-style-two .navbar-toggler {
@@ -811,7 +874,7 @@
   }
 
   .header-style-two .header-upper .nav-outer {
-    margin-top: -70px;
+    margin-top: 0px !important; /* CORRIGÉ: Était -70px. Assure que le nav-outer ne remonte pas. */
   }
 
   .banner-section-two {

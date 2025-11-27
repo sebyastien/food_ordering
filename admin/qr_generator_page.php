@@ -2,15 +2,66 @@
 // qr_generator_page.php
 
 session_start();
+
+// --- LOGIQUE DE GÉNÉRATION CÔTÉ SERVEUR ---
+// Ce bloc s'exécute lorsque l'IMG tag fait un appel secondaire au serveur.
+if (isset($_GET['action']) && $_GET['action'] === 'generate' && isset($_GET['data'])) {
+    
+    // Démarrer la mise en tampon de sortie
+    ob_start(); 
+    
+    $data = urldecode($_GET['data']);
+    
+    try {
+        // Inclure la bibliothèque phpqrcode (plus simple, sans Composer)
+        // Téléchargez phpqrcode depuis : https://sourceforge.net/projects/phpqrcode/
+        // Placez le dossier 'phpqrcode' dans le même répertoire que ce fichier
+        
+        if (!file_exists('phpqrcode/qrlib.php')) {
+            throw new Exception("Bibliothèque phpqrcode non trouvée. Téléchargez-la et placez-la dans le dossier 'phpqrcode'.");
+        }
+        
+        include 'phpqrcode/qrlib.php';
+        
+        // Nettoyer le buffer
+        if (ob_get_level() > 0) {
+            ob_end_clean(); 
+        }
+        
+        // Générer le QR Code directement en sortie
+        header('Content-Type: image/png');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+        
+        // QRcode::png($data, false, QR_ECLEVEL_H, 10, 2);
+        // Paramètres : données, fichier (false = sortie directe), niveau correction erreur, taille, marge
+        QRcode::png($data, false, 'H', 10, 2);
+        
+    } catch (Exception $e) {
+        // En cas d'erreur, nettoyage et envoi d'une image d'erreur
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        error_log("QR Code Generation Error: " . $e->getMessage());
+        header('Content-Type: image/png');
+        // Image de 1x1 pixel transparent
+        echo base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+    }
+    exit;
+}
+// ---------------------------------------------------
+
+
 include "header.php";
 
-$base_url = 'http://localhost/food_ordering_system/user'; // À REMPLACER PAR VOTRE URL
+$base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
 
 ?>
 
 <style>
     :root {
-        --primary-color: #a41a13; /* Rouge principal */
+        --primary-color: #a41a13;
         --dark-color: #333;
         --light-color: #f7f7f7;
         --text-color: #555;
@@ -134,6 +185,36 @@ $base_url = 'http://localhost/food_ordering_system/user'; // À REMPLACER PAR VO
         color: #888;
         word-wrap: break-word;
     }
+    
+    .error-message {
+        color: #dc3545;
+        padding: 15px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: var(--border-radius);
+        margin-top: 20px;
+    }
+    
+    .loading {
+        color: #17a2b8;
+        font-style: italic;
+        margin-top: 20px;
+    }
+    
+    .download-btn {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 25px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: var(--border-radius);
+        font-weight: bold;
+    }
+    
+    .download-btn:hover {
+        background-color: #218838;
+    }
 </style>
 
 <div class="container">
@@ -161,8 +242,7 @@ $base_url = 'http://localhost/food_ordering_system/user'; // À REMPLACER PAR VO
         </div>
     </div>
     
-    <div id="qr-display-area" class="qr-display-area">
-        </div>
+    <div id="qr-display-area" class="qr-display-area"></div>
 </div>
 
 <script>
@@ -184,17 +264,52 @@ $base_url = 'http://localhost/food_ordering_system/user'; // À REMPLACER PAR VO
             url = baseUrl + '/takeaway.php';
         }
         
-        // Utilisation de l'API Google Charts pour la génération (simple, mais déprécié)
-        const qrUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=' + encodeURIComponent(url);
+        // Afficher un message de chargement
+        qrDisplayArea.innerHTML = '<p class="loading">⏳ Génération du QR Code en cours...</p>';
         
-        qrDisplayArea.innerHTML = `
-            <h3>QR Code généré :</h3>
-            <div class="qr-image">
-                <img src="${qrUrl}" alt="QR Code" />
-            </div>
-            <p class="qr-url">URL : <strong>${url}</strong></p>
-            <p style="margin-top: 15px;"><small>Faites un clic droit sur l'image pour la sauvegarder ou l'imprimer.</small></p>
-        `;
+        // L'URL de l'image
+        const qrImageUrl = 'qr_generator_page.php?action=generate&data=' + encodeURIComponent(url) + '&_t=' + new Date().getTime();
+        
+        // Créer une nouvelle image pour tester le chargement
+        const testImg = new Image();
+        
+        testImg.onload = function() {
+            // Si l'image se charge correctement, l'afficher
+            const label = type === 'table' ? 'Table ' + tableId : 'À emporter';
+            qrDisplayArea.innerHTML = `
+                <h3>✅ QR Code généré pour : ${label}</h3>
+                <div class="qr-image">
+                    <img src="${qrImageUrl}" alt="QR Code" id="qr-code-img" />
+                </div>
+                <p class="qr-url">URL : <strong>${url}</strong></p>
+                <a href="${qrImageUrl}" download="qrcode_${type}_${tableId || 'takeaway'}.png" class="download-btn">
+                    📥 Télécharger le QR Code
+                </a>
+                <p style="margin-top: 15px;"><small>Ou faites un clic droit sur l'image pour la sauvegarder/imprimer.</small></p>
+            `;
+        };
+        
+        testImg.onerror = function() {
+            // Si l'image ne se charge pas, afficher une erreur détaillée
+            qrDisplayArea.innerHTML = `
+                <div class="error-message">
+                    <h4>❌ Erreur de génération du QR Code</h4>
+                    <p><strong>La bibliothèque phpqrcode n'est pas installée.</strong></p>
+                    <ol style="text-align: left; display: inline-block; margin-top: 15px;">
+                        <li>Téléchargez phpqrcode : <a href="https://sourceforge.net/projects/phpqrcode/files/" target="_blank">SourceForge</a></li>
+                        <li>Extrayez le fichier ZIP</li>
+                        <li>Placez le dossier 'phpqrcode' dans : <code>C:\\wamp64\\www\\food_ordering\\admin\\</code></li>
+                        <li>Vérifiez que le fichier existe : <code>C:\\wamp64\\www\\food_ordering\\admin\\phpqrcode\\qrlib.php</code></li>
+                        <li>Rechargez cette page et réessayez</li>
+                    </ol>
+                    <p style="margin-top: 15px;"><small>URL de test : <code>${qrImageUrl}</code></small></p>
+                </div>
+            `;
+            console.error('Erreur de chargement du QR Code:', qrImageUrl);
+        };
+        
+        // Déclencher le chargement de l'image de test
+        testImg.src = qrImageUrl;
     }
 </script>
 

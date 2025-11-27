@@ -47,7 +47,7 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
     <link href="assets/vendors/revolution/css/navigation.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style.css?v=<?= time() ?>" rel="stylesheet">
-    <link href="assets/css/responsive.css" rel="stylesheet">
+    <link href="assets/css/responsive.css?v=<?php echo filemtime('assets/css/responsive.css'); ?>" rel="stylesheet">
 
     <link rel="shortcut icon" href="assets/images/logo-02.png" type="image/x-icon">
     <link rel="icon" href="assets/images/logo-02.png" type="image/x-icon">
@@ -58,7 +58,21 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-</head>
+    
+    <style>
+        /* Augmente l'espace autour du contenu de l'en-tête principal */
+        .main-header .header-upper .inner-container {
+            padding-top: 5px; /* Ajout d'espace en haut */
+            padding-bottom: 5px; /* Ajout d'espace en bas */
+        }
+
+        /* Ajuste la hauteur de l'en-tête collant (sticky) pour qu'il soit aussi un peu plus grand */
+        .main-header .sticky-header {
+            padding: 10px 0; /* Augmente le padding vertical */
+        }
+        
+    </style>
+    </head>
 
 <body>
 
@@ -67,29 +81,15 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
         <div class="preloader"></div>
 
         <header class="main-header">
-            <div class="header-top" style="background-color:#f2e39c; color:black">
+            <div class="header-upper">
                 <div class="auto-container clearfix">
-                    <div class="top-left">
-                        <ul class="info-list">
-                            <li>
-                                <a href="mailto:info@abc.co.in" style="color: black">
-                                    <span class="icon far fa-envelope"></span> info@abc.co.in
-                                </a>
-                            </li>
-                        </ul>
+                    <div class="top-left">    
                     </div>
                     <div class="top-right clearfix">
-                        <ul class="social-box">
-                            <li><a href="#" style="color: black"><span class="fa fa-user-alt"></span></a></li>
-                        </ul>
 
                         <div class="option-list">
                             <div class="cart-btn">
-                                <a href="<?= $cart_link ?>" class="icon flaticon-shopping-cart" style="color: black">
-                                    <span class="total-cart" style="background-color: #a40301; color: white;">
-                                        <?php echo $total_items > 0 ? $total_items : ''; ?>
-                                    </span>
-                                </a>
+                                
                             </div>
                         </div>
                     </div>
@@ -97,14 +97,13 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
             </div>
             <div class="header-upper">
                 <div class="inner-container">
-                    <div class="auto-container clearfix">
-                        <div class="logo-outer">
-                            <div class="logo" style="margin-top: -20px;">
-                                <a href="<?= $home_link ?>">
-                                    <img src="assets/images/logo-02.png" alt="" title="">
-                                </a>
-                            </div>
-                        </div>
+                    <div class="auto-container clearfix header-mobile-content">
+    <div class="logo-outer">
+        <div class="logo"> <a href="<?= $home_link ?>">
+                <img class="header-logo" src="assets/images/logo-02.png" alt="" title="">
+            </a>
+        </div>
+    </div>
 
                         <div class="nav-outer clearfix">
                             <nav class="main-menu navbar-expand-md navbar-light">
@@ -132,8 +131,15 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
                                     <span><a href="tel:1800-123-4567">1800 123 4567</a></span>
                                 </div>
                             </div>
-
-                        </div>
+                            <div class="option-list">
+                                <div class="cart-btn">
+                                    <a href="<?= $cart_link ?>" title="Shopping Cart">
+                                        <i class="flaticon-shopping-bag"></i>
+                                        <span class="count"><?= $total_items ?></span>
+                                    </a>
+                                </div>
+                            </div>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -141,19 +147,22 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
                 <div class="auto-container clearfix">
                     <div class="logo pull-left">
                         <a href="<?= $home_link ?>" class="img-responsive">
-                            <img src="assets/images/logo-02.png" alt="" title="" height="90" width="90" style="margin-top: -10px;">
+                            <img src="assets/images/logo-02.png" alt="" title="" height="90" width="90"> 
                         </a>
                     </div>
 
                     <div class="right-col pull-right">
-                        <nav class="main-menu navbar-expand-md">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
+                        <div class="option-list pull-left" style="margin-right: 15px;">
+                            
+                        </div>
+                        <nav class="main-menu navbar-expand-md pull-right">
+                            <div class="navbar-header"> 
+                                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                    data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1"
+                                    aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="icon flaticon-menu"></span> 
+                                </button>
+                            </div>
 
                             <div class="navbar-collapse collapse clearfix" id="navbarSupportedContent1">
                                 <ul class="navigation clearfix">

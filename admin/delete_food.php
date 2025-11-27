@@ -1,7 +1,7 @@
 <?php
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];
+$roles_autorises = ['admin', 'patron', 'gérant'];
 include "auth_check.php";
 
 // Vérifiez si l'ID a été passé dans l'URL

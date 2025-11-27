@@ -18,9 +18,9 @@ $response = ['success' => false, 'message' => '', 'details' => []];
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $order_id = $_GET['id'];
     
-    // Requête SQL corrigée pour utiliser les noms de tables et de colonnes de votre base de données
+    // Requête SQL modifiée pour inclure item_comment
     $stmt = $link->prepare("
-        SELECT food_name, quantity, price
+        SELECT food_name, quantity, price, item_comment
         FROM order_items
         WHERE order_id = ?
     ");

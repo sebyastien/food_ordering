@@ -8,7 +8,7 @@ if (isset($_GET['table_id'])) {
 
 // On récupère la valeur en session. Si elle n'existe pas, on redirige.
 $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
-// 🔑 Ajout de la récupération de l'ID de l'utilisateur
+// 🔒 Ajout de la récupération de l'ID de l'utilisateur
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 // Vérifier que l'ID de la table et de l'utilisateur sont présents
@@ -21,7 +21,7 @@ if ($table_id === 0 || !$user_id) {
 include "header.php";
 include "../admin/connection.php";
 
-// 🔑 On accède au panier spécifique à l'utilisateur actuel.
+// 🔒 On accède au panier spécifique à l'utilisateur actuel.
 $cart_for_this_user = isset($_SESSION['carts_by_table'][$table_id][$user_id]) ? $_SESSION['carts_by_table'][$table_id][$user_id] : [];
 
 // Vérifier si le panier de l'utilisateur est vide.
@@ -41,7 +41,7 @@ if (count($cart_for_this_user) === 0) {
 }
 
 $cart_total = 0;
-// 🔑 Boucler sur le panier de l'utilisateur
+// 🔒 Boucler sur le panier de l'utilisateur
 foreach ($cart_for_this_user as $item) {
     $qty = intval($item['qty_total']);
     $price = floatval($item['price']);
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($client_name) || empty($payment_method)) {
         $error = "Le nom du client et le mode de paiement sont obligatoires.";
     } else {
-        // 🔑 Utilisation du panier de l'utilisateur pour la validation de la commande
+        // 🔒 Utilisation du panier de l'utilisateur pour la validation de la commande
         $cart_items = $cart_for_this_user;
         $total_confirm = 0;
         foreach ($cart_items as $item) {
@@ -69,12 +69,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $total_confirm += $qty * $price;
         }
 
-        // Génération d’un numéro de commande
+        // Génération d'un numéro de commande
         $order_number = strtoupper('CMD' . bin2hex(random_bytes(3)));
 
         // Insertion de la commande
-        // 🔑 SÉCURITÉ : La connexion doit être ouverte ici, pas fermée avant.
-        // 🔑 Ajout de la colonne user_id
         $stmt = $link->prepare("INSERT INTO orders (order_number, customer_name, payment_method, total_price, table_id, user_id) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssdis", $order_number, $client_name, $payment_method, $total_confirm, $table_id, $user_id);
         $stmt->execute();
@@ -82,18 +80,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
 
         // Insertion des articles commandés
-        // ⚠️ SÉCURITÉ : Assainissement du nom pour la base de données
-        $stmt_item = $link->prepare("INSERT INTO order_items (order_id, food_name, quantity, price) VALUES (?, ?, ?, ?)");
+        // 💡 Ajout de item_comment dans la requête SQL et dans les paramètres
+        $stmt_item = $link->prepare("INSERT INTO order_items (order_id, food_name, quantity, price, item_comment) VALUES (?, ?, ?, ?, ?)");
+        
         foreach ($cart_items as $item) {
-            $name = htmlspecialchars($item['nm']); // Assainissement
+            $name = htmlspecialchars($item['nm']);
             $qty = intval($item['qty_total']);
             $price = floatval($item['price']);
-            $stmt_item->bind_param("isid", $order_id, $name, $qty, $price);
+            // 💡 Récupération et assainissement du commentaire.
+            $comment = isset($item['comment']) ? htmlspecialchars(trim($item['comment'])) : ''; 
+            
+            // 💡 Ajout du type 's' pour le commentaire dans bind_param
+            $stmt_item->bind_param("isids", $order_id, $name, $qty, $price, $comment);
             $stmt_item->execute();
         }
         $stmt_item->close();
 
-        // 🔑 Vider le panier spécifique à l'utilisateur après la commande
+        // 🔒 Vider le panier spécifique à l'utilisateur après la commande
         unset($_SESSION["carts_by_table"][$table_id][$user_id]);
 
         // Affichage confirmation
@@ -111,47 +114,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                       <hr style='margin:25px 0;'>
                       <h3>Détail de la commande :</h3>";
 
-        echo "<table style='width:100%; border-collapse: collapse; font-size:1rem;'>
-                  <thead>
-                      <tr style='background:#a40301; color:#fff;'>
-                          <th style='padding:10px; text-align:left;'>Produit</th>
-                          <th style='padding:10px; text-align:center;'>Quantité</th>
-                          <th style='padding:10px; text-align:right;'>Prix Unitaire (€)</th>
-                          <th style='padding:10px; text-align:right;'>Total Ligne (€)</th>
-                      </tr>
-                  </thead>
-                  <tbody>";
-
+        // Début de l'affichage adapté au mobile avec STYLISATION AMÉLIORÉE
+        echo "<div style='margin-bottom: 20px;'>";
         $total_confirm = 0;
         foreach ($cart_items as $item) {
             $name = htmlspecialchars($item['nm']);
             $qty = intval($item['qty_total']);
             $price = floatval($item['price']);
+            $comment = htmlspecialchars($item['comment'] ?? ''); 
             $total_line = $qty * $price;
             $total_confirm += $total_line;
 
-            echo "<tr>
-                      <td style='padding:8px; border-bottom:1px solid #ddd;'>$name</td>
-                      <td style='padding:8px; border-bottom:1px solid #ddd; text-align:center;'>$qty</td>
-                      <td style='padding:8px; border-bottom:1px solid #ddd; text-align:right;'>" . number_format($price, 2) . "</td>
-                      <td style='padding:8px; border-bottom:1px solid #ddd; text-align:right;'>" . number_format($total_line, 2) . "</td>
-                  </tr>";
+            // Nouvelle carte stylisée pour chaque article
+            echo "<div style='border: 1px solid #e0e0e0; padding: 15px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); background: #fafafa;'>
+                      <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
+                          <span style='font-weight: 700; color: #a40301; font-size: 1.1rem;'>" . $name . "</span>
+                          <span style='font-weight: 700; color: #333; font-size: 1.1rem;'>" . number_format($total_line, 2) . " €</span>
+                      </div>
+                      <div style='display: flex; justify-content: space-between; font-size: 0.9rem; color: #555;'>
+                          <span>Qté: <span style='font-weight: 600;'>$qty</span></span>
+                          <span>Prix U.: " . number_format($price, 2) . " €</span>
+                      </div>";
+            if (!empty($comment)) {
+                echo "<div style='font-size: 0.85rem; color: #007bff; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e0e0e0;'>
+                          Instructions : <span style='color: #007bff; font-style: italic;'>" . $comment . "</span>
+                      </div>";
+            }
+            echo "</div>";
         }
+        echo "</div>";
 
-        echo "</tbody>
-                  <tfoot>
-                  <tr>
-                      <td colspan='3' style='padding:10px; font-weight:700; text-align:right; border-top:2px solid #a40301;'>Montant Total :</td>
-                      <td style='padding:10px; font-weight:700; text-align:right; border-top:2px solid #a40301; color:#a40301;'>" . number_format($total_confirm, 2) . " €</td>
-                  </tr>
-                  </tfoot>
-              </table>";
+        // Affichage du total stylisé
+        echo "<div style='text-align: right; padding: 15px; border-top: 3px solid #a40301; background: #fff8f8; border-radius: 0 0 10px 10px; margin-top: 10px;'>
+                  <span style='font-weight: 700; font-size: 1.3rem; color: #333;'>Montant Total : </span>
+                  <span style='font-weight: 700; font-size: 1.3rem; color: #a40301;'>" . number_format($total_confirm, 2) . " €</span>
+              </div>";
+        // Fin de l'affichage adapté au mobile
 
         // Ajout des deux liens dans la même div
         echo "<div style='text-align: center; margin-top: 35px;'>
                   <p>Gardez ce numéro pour suivre votre commande à tout moment : <strong>" . htmlspecialchars($order_number) . "</strong></p>
+                  <p id='download-status' style='color: #28a745; font-weight: 600; margin-bottom: 10px;'>Téléchargement de votre facture en cours...</p>
                   <a href='facture.php?order_number=$order_number' style='display:block; background:#007bff; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700; margin-bottom:10px;'>
-                      Télécharger la facture (PDF)
+                      Télécharger à nouveau la facture (PDF)
                   </a>
                   <a href='track_order.php?order_number=$order_number' style='display:block; background:#6c757d; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700; margin-bottom:10px;'>
                       Suivre ma commande
@@ -162,6 +167,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               </div>
           </div>
           </section>";
+
+        // Script pour télécharger automatiquement la facture
+        echo "<script>
+                window.onload = function() {
+                    // Créer un iframe invisible pour le téléchargement
+                    var iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = 'facture.php?order_number=$order_number';
+                    document.body.appendChild(iframe);
+                    
+                    // Changer le message après 2 secondes
+                    setTimeout(function() {
+                        var statusElement = document.getElementById('download-status');
+                        if (statusElement) {
+                            statusElement.textContent = 'Facture téléchargée avec succès !';
+                        }
+                    }, 2000);
+                };
+              </script>";
 
         include "footer.php";
         exit;
@@ -215,9 +239,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <h3>Résumé de la commande :</h3>
         <ul style="list-style:none; padding-left:0; font-size:1rem;">
-            <?php foreach ($cart_for_this_user as $item): ?>
+            <?php foreach ($cart_for_this_user as $item): 
+                $comment = htmlspecialchars($item['comment'] ?? ''); 
+            ?>
                 <li style="padding: 8px 0; border-bottom:1px solid #ddd;">
-                    <?= htmlspecialchars($item['nm']) ?> — Quantité : <?= intval($item['qty_total']) ?> — Prix unitaire : <?= number_format(floatval($item['price']), 2) ?> €
+                    <?= htmlspecialchars($item['nm']) ?> – Quantité : <?= intval($item['qty_total']) ?> – Prix unitaire : <?= number_format(floatval($item['price']), 2) ?> €
+                    <?php if (!empty($comment)): ?>
+                        <span style="display: block; font-size: 0.9rem; color: #a40301; margin-top: 3px;">
+                             Instructions : <?= $comment ?>
+                        </span>
+                    <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

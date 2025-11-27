@@ -1,21 +1,17 @@
 <?php
 session_start();
 
-
 // Gérer l'ID de la table
 if (isset($_GET['table_id'])) {
     $_SESSION['table_id'] = intval($_GET['table_id']);
 }
 $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
 
-// 🔑 Gérer l'ID de l'utilisateur
+// 🔒 Gérer l'ID de l'utilisateur
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
 $user_id = $_SESSION['user_id'];
-
-// Le reste du code de la page...
-// ...
 
 include "header.php";
 include "../admin/connection.php";
@@ -28,15 +24,54 @@ if ($row = mysqli_fetch_array($res)) {
     $food_name = $row["food_name"];
     $food_description = $row["food_description"];
     $food_image = $row["food_image"];
-    $food_price = $row["food_discount_price"];
+    $food_price = $row["food_original_price"];
     $food_ingredients = $row["food_ingredients"];
     $food_category = $row["food_category"];
 }
 ?>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
 
+<style>
+.comment-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
 
+.comment-box label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+}
 
+.comment-box textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+.comment-box textarea:focus {
+    outline: none;
+    border-color: #a41a13;
+    box-shadow: 0 0 5px rgba(164, 26, 19, 0.2);
+}
+
+.comment-box small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 12px;
+}
+</style>
 
 <title>Food Description</title>
 
@@ -67,13 +102,30 @@ if ($row = mysqli_fetch_array($res)) {
                                 <h2><?php echo $food_name; ?></h2>
                                 <div class="text"><?php echo $food_description; ?></div>
                                 <div class="text">Ingredients: <?php echo $food_ingredients; ?></div>
-                                <div class="price">Price: <span><?php echo $food_price; ?></span></div>
+                                <div class="price">Price: <span><?php echo $food_price; ?> €</span></div>
 
                                 <div class="other-options clearfix">
                                     <div class="item-quantity">
                                         <label class="field-label">Quantity :</label>
                                         <input class="quantity-spinner" type="number" min="1" value="1" name="quantity" id="qty">
                                     </div>
+                                    
+                                    <!-- Zone de commentaire -->
+                                    <div class="comment-box">
+                                        <label for="order-comment">
+                                            <i class="fas fa-comment-dots"></i> Commentaire (optionnel)
+                                        </label>
+                                        <textarea 
+                                            id="order-comment" 
+                                            placeholder="Ex: Sans oignons, bien cuit, sauce à part..."
+                                            maxlength="200"
+                                        ></textarea>
+                                        <small>Précisez vos préférences ou modifications souhaitées</small>
+                                    </div>
+                                    <div>
+                                        <p></p>
+                                        </div>
+
                                     <button type="button" class="theme-btn btn-style-five" onclick="add_to_cart('<?php echo $id; ?>', document.getElementById('qty').value);">
                                         <span class="txt">Order now</span>
                                     </button>
@@ -137,7 +189,7 @@ if ($row = mysqli_fetch_array($res)) {
                                 </a>
                             </h4>
                             <div class="text"><?php echo substr($row["food_description"], 0, 30); ?>...</div>
-                            <div class="price"><?php echo $row["food_discount_price"]; ?> </div>
+                            <div class="price"><?php echo $row["food_original_price"]; ?> € </div>
                             <div class="lower-box">
                                 <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>" class="theme-btn btn-style-five">
                                     <span class="txt">Food description</span>
@@ -158,50 +210,58 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- JavaScript -->
 <script type="text/javascript">
     function add_to_cart(id, qty) {
-    var table_id = <?php echo $table_id; ?>;
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "add_to_cart.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            try {
-                var res = JSON.parse(xhr.responseText);
+        var table_id = <?php echo $table_id; ?>;
+        var comment = document.getElementById('order-comment').value.trim();
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "add_to_cart.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                try {
+                    var res = JSON.parse(xhr.responseText);
 
-                // Création d’une alerte visuelle similaire à index.php
-                let alertBox = document.createElement("div");
-                alertBox.className = "alert-notif";
-                alertBox.style.position = "fixed";
-                alertBox.style.top = "50%";
-                alertBox.style.left = "50%";
-                alertBox.style.transform = "translate(-50%, -50%)";
-                alertBox.style.padding = "15px 30px";
-                alertBox.style.color = "white";
-                alertBox.style.borderRadius = "8px";
-                alertBox.style.zIndex = 9999;
-                alertBox.style.background = res.success ? "#28a745" : "#dc3545";
-                alertBox.style.opacity = "0";
-                alertBox.style.transition = "opacity 0.5s ease";
-                alertBox.textContent = res.message;
-                document.body.appendChild(alertBox);
-
-                setTimeout(() => alertBox.style.opacity = "1", 10);
-                setTimeout(() => {
+                    // Création d'une alerte visuelle similaire à index.php
+                    let alertBox = document.createElement("div");
+                    alertBox.className = "alert-notif";
+                    alertBox.style.position = "fixed";
+                    alertBox.style.top = "50%";
+                    alertBox.style.left = "50%";
+                    alertBox.style.transform = "translate(-50%, -50%)";
+                    alertBox.style.padding = "15px 30px";
+                    alertBox.style.color = "white";
+                    alertBox.style.borderRadius = "8px";
+                    alertBox.style.zIndex = 9999;
+                    alertBox.style.background = res.success ? "#28a745" : "#dc3545";
                     alertBox.style.opacity = "0";
-                    setTimeout(() => alertBox.remove(), 500);
-                }, 1000);
+                    alertBox.style.transition = "opacity 0.5s ease";
+                    alertBox.textContent = res.message;
+                    document.body.appendChild(alertBox);
 
-            } catch {
-                alert("Erreur lors de l'ajout au panier.");
+                    setTimeout(() => alertBox.style.opacity = "1", 10);
+                    setTimeout(() => {
+                        alertBox.style.opacity = "0";
+                        setTimeout(() => alertBox.remove(), 500);
+                    }, 1000);
+
+                    // Réinitialiser le champ commentaire après ajout réussi
+                    if (res.success) {
+                        document.getElementById('order-comment').value = '';
+                    }
+
+                } catch {
+                    alert("Erreur lors de l'ajout au panier.");
+                }
             }
-        }
-    };
-    xhr.send("id=" + encodeURIComponent(id) + "&qty=" + encodeURIComponent(qty) + "&table_id=" + encodeURIComponent(table_id));
-}
+        };
+        xhr.send("id=" + encodeURIComponent(id) + 
+                 "&qty=" + encodeURIComponent(qty) + 
+                 "&table_id=" + encodeURIComponent(table_id) + 
+                 "&comment=" + encodeURIComponent(comment));
+    }
 </script>
 
 <?php
-// include "delivery_section.php";
-// include "service_section.php";
 include "footer.php";
 ?>
 

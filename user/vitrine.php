@@ -15,9 +15,9 @@ include "header.php";
 
     .hero-section {
         position: relative;
-        height: 80vh; /* 80% de la hauteur de la fenêtre */
-        background-color: #a41a13; /* Fond rouge */
-        color: white; /* Texte en blanc */
+        height: 80vh;
+        background-color: #a41a13;
+        color: white;
         text-align: center;
         display: flex;
         flex-direction: column;
@@ -32,12 +32,13 @@ include "header.php";
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.2); /* Overlay légèrement sombre pour la lisibilité */
+        background-color: rgba(0, 0, 0, 0.2);
     }
     
     .hero-content {
         position: relative;
         z-index: 1;
+        padding: 0 20px;
     }
 
     .hero-content h1 {
@@ -117,6 +118,135 @@ include "header.php";
     .cta-section button:hover {
         background-color: #000;
     }
+
+    .order-options {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .order-option {
+        flex: 1;
+        min-width: 250px;
+        max-width: 400px;
+    }
+
+    /* Styles Mobile Responsive */
+    @media screen and (max-width: 768px) {
+        /* Hero Section */
+        .hero-section {
+            height: 60vh;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 2em !important;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.1em !important;
+            margin-top: 15px;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 40px 20px;
+        }
+
+        .content-section h2 {
+            font-size: 1.8em !important;
+            margin-bottom: 15px;
+        }
+
+        .content-section p {
+            font-size: 1em !important;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 40px 20px;
+        }
+
+        .cta-section h2 {
+            font-size: 1.8em !important;
+            margin-bottom: 15px;
+        }
+
+        .cta-section p {
+            font-size: 1em !important;
+        }
+
+        /* Order Options */
+        .order-options {
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        .order-option {
+            min-width: 100%;
+            max-width: 100%;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .order-option h4 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .order-option p {
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        /* Boutons */
+        .cta-section button {
+            width: 100%;
+            padding: 15px 20px !important;
+            font-size: 1.1em !important;
+            margin-top: 10px;
+        }
+
+        .cta-section input {
+            width: 100%;
+            padding: 12px !important;
+            font-size: 1em !important;
+        }
+    }
+
+    /* Styles pour très petits écrans */
+    @media screen and (max-width: 480px) {
+        .hero-section {
+            height: 50vh;
+        }
+
+        .hero-content h1 {
+            font-size: 1.6em !important;
+        }
+
+        .hero-content p {
+            font-size: 1em !important;
+        }
+
+        .content-section h2,
+        .cta-section h2 {
+            font-size: 1.5em !important;
+        }
+
+        .order-option {
+            padding: 15px;
+        }
+
+        .order-option h4 {
+            font-size: 1.2em;
+        }
+    }
 </style>
 
 <div class="vitrine-page">
@@ -138,16 +268,8 @@ include "header.php";
     <section class="cta-section">
         <h2>Prêt à commander ?</h2>
         <p>Choisissez comment vous souhaitez passer votre commande.</p>
-        <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px;">
-            <div>
-                <h4>Commander à table</h4>
-                <p>Entrez le numéro de votre table pour accéder au menu.</p>
-                <form action="index.php" method="GET">
-                    <input type="text" id="table_id" name="table_id" placeholder="Ex: 5" required>
-                    <button type="submit">Accéder au menu</button>
-                </form>
-            </div>
-            <div style="border-left: 1px solid white; padding-left: 30px;">
+        <div class="order-options">
+            <div class="order-option">
                 <h4>Commander à domicile</h4>
                 <p>Commandez en ligne et faites-vous livrer chez vous.</p>
                 <form action="takeaway.php" method="GET">

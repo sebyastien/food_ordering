@@ -2,7 +2,7 @@
 <?php
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+$roles_autorises = ['admin', 'patron', 'gérant'];  // adapter selon la page
 include "auth_check.php";
 
 include "header.php";

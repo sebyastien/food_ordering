@@ -2,7 +2,7 @@
 session_start();
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+$roles_autorises = ['admin', 'patron', 'gérant'];
 include "auth_check.php";
 
 include "header.php";
@@ -11,8 +11,6 @@ $food_name = "";
 $food_category = "";
 $food_description = "";
 $food_original_price = "";
-$food_discount_price = "";
-$food_avaibility = "";
 $food_veg_nonveg = "";
 $food_ingredients = "";
 $food_image = "";
@@ -23,8 +21,6 @@ while ($row = mysqli_fetch_array($res)) {
     $food_category = $row["food_category"];
     $food_description = $row["food_description"];
     $food_original_price = $row["food_original_price"];
-    $food_discount_price = $row["food_discount_price"];
-    $food_avaibility = $row["food_avaibility"];
     $food_veg_nonveg = $row["food_veg_nonveg"];
     $food_ingredients = $row["food_ingredients"];
     $food_image = $row["food_image"];
@@ -56,14 +52,15 @@ while ($row = mysqli_fetch_array($res)) {
                     <div id="pay-invoice">
                         <div class="card-body">
                             <div class="alert alert-success" role="alert" id="success" style="display: none">
-                                Food added successfully
+                                Food updated successfully
                             </div>
                             <div class="alert alert-danger" role="alert" id="error" style="display: none">
-                                Duplicate Food found
+                                Error updating food
                             </div>
                             <form name="form1" action="" method="post">
                                 <div class="form-group">
-                                    <div id="uploaded_image" style="..."
+                                    <label>Image</label><br>
+                                    <div id="uploaded_image" style="cursor:pointer;"
                                          onclick="document.getElementById('upload_image').click();">
                                         <img src="<?php if ($food_image != "") {
                                             echo $food_image;
@@ -92,37 +89,18 @@ while ($row = mysqli_fetch_array($res)) {
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Food Descriptions</label>
+                                    <label for="cc-payment" class="control-label mb-1">Food Description</label>
                                     <textarea name="food_description"
                                               class="form-control"><?php echo $food_description; ?></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Food Original Price</label>
+                                    <label for="cc-payment" class="control-label mb-1">Price</label>
                                     <input id="food_original_price" name="food_original_price" type="text"
-                                           class="form-control" placeholder="Enter Food Original Price" required
+                                           class="form-control" placeholder="Enter Food Price" required
                                            value="<?php echo $food_original_price; ?>">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Food Discount Price</label>
-                                    <input id="food_discount_price" name="food_discount_price" type="text"
-                                           class="form-control" placeholder="Enter Food Discount Price" required
-                                           value="<?php echo $food_discount_price; ?>">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Food Availibility</label>
-                                    <select name="food_avaibility" class="form-control">
-                                        <option <?php if ($food_avaibility == "Yes") {
-                                            echo "selected";
-                                        } ?>>Yes
-                                        </option>
-                                        <option <?php if ($food_avaibility == "No") {
-                                            echo "selected";
-                                        } ?>>No
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="cc-payment" class="control-label mb-1">Food Veg / NonVeg</label>
+                                    <label for="cc-payment" class="control-label mb-1">Veg / NonVeg</label>
                                     <select name="food_veg_nonveg" class="form-control">
                                         <option <?php if ($food_veg_nonveg == "Veg") {
                                             echo "selected";
@@ -151,15 +129,12 @@ while ($row = mysqli_fetch_array($res)) {
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>
 
 <?php
 if (isset($_POST["submit1"])) {
-    // Récupérer la valeur du champ de texte
     $ingredients = mysqli_real_escape_string($link, $_POST["ingredients"]);
 
     // Mise à jour des données dans la base
@@ -168,8 +143,6 @@ if (isset($_POST["submit1"])) {
         food_category='" . mysqli_real_escape_string($link, $_POST['food_category']) . "',
         food_description='" . mysqli_real_escape_string($link, $_POST['food_description']) . "',
         food_original_price='" . mysqli_real_escape_string($link, $_POST['food_original_price']) . "',
-        food_discount_price='" . mysqli_real_escape_string($link, $_POST['food_discount_price']) . "',
-        food_avaibility='" . mysqli_real_escape_string($link, $_POST['food_avaibility']) . "',
         food_veg_nonveg='" . mysqli_real_escape_string($link, $_POST['food_veg_nonveg']) . "',
         food_ingredients='" . $ingredients . "'
         WHERE id='" . intval($_GET['id']) . "'") or die(mysqli_error($link));
@@ -187,7 +160,7 @@ if (isset($_POST["submit1"])) {
         document.getElementById("success").style.display = "block";
         setTimeout(function () {
             window.location.href = "display_food.php";
-        }, 1000); // redirection après 1 seconde
+        }, 1000);
     </script>
     <?php
 }
@@ -204,9 +177,7 @@ if (isset($_POST["submit1"])) {
                 <div class="row">
                     <div class="col-md-8 text-center">
                         <div id="image_demo" style="width:350px;"></div>
-
                     </div>
-
                     <div class="col-md-12">
                         <button class="btn btn-success crop_image">Crop & Upload Image</button>
                     </div>
@@ -219,7 +190,6 @@ if (isset($_POST["submit1"])) {
     </div>
 </div>
 <script>
-    //https://foliotek.github.io/Croppie/
     $(document).ready(function () {
         $image_crop = $('#image_demo').croppie({
             enforceBoundary: false,
@@ -236,7 +206,6 @@ if (isset($_POST["submit1"])) {
         });
 
         $('#upload_image').on('change', function () {
-
             var reader = new FileReader();
             reader.onload = function (event) {
                 $image_crop.croppie('bind', {
@@ -265,7 +234,6 @@ if (isset($_POST["submit1"])) {
                 });
             })
         });
-
     });
 </script>
 <script src="cropping_js/bootstrap.min.js"></script>

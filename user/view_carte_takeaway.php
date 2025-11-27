@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 🔑 Gérer l'ID de l'utilisateur. On ne gère pas l'ID de la table ici.
+// 🔒 Gérer l'ID de l'utilisateur. On ne gère pas l'ID de la table ici.
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 include "header.php";
@@ -21,12 +21,19 @@ include "../admin/connection.php";
     text-align: left;
 }
 .cart-table .quantity-spinner {
-    width: 70px; /* largeur adaptée pour voir même de grands nombres */
+    width: 70px;
     min-width: 70px;
     text-align: center;
     padding: 5px;
     font-size: 14px;
     box-sizing: border-box;
+}
+
+.comment-display {
+    font-size: 13px;
+    color: #a41a13;
+    margin-top: 5px;
+    display: block;
 }
 
 @media screen and (max-width: 768px) {
@@ -38,14 +45,20 @@ include "../admin/connection.php";
     }
 
     .cart-table {
-        min-width: 600px; /* largeur mini pour scroll */
+        min-width: 800px;
         border-collapse: collapse;
     }
 
     .cart-table th, .cart-table td {
-        white-space: nowrap; /* Empêche le retour à la ligne */
+        white-space: nowrap;
         padding: 10px;
         vertical-align: middle;
+    }
+    
+    /* Permet au commentaire de s'afficher sur plusieurs lignes */
+    .cart-table td .comment-display {
+        white-space: normal;
+        max-width: 250px;
     }
 
     .cart-table th {
@@ -58,23 +71,21 @@ include "../admin/connection.php";
         border-radius: 4px;
     }
 
-    /* Colonne prix et total en ligne unique */
     .cart-table .sub-total,
     .cart-table .price {
         white-space: nowrap;
     }
 
-    /* Cart Totals (zone à droite) en ligne unique */
     .totals-table .price {
         white-space: nowrap;
     }
+    
     .cart-table .quantity-spinner {
         width: 60px;
         min-width: 60px;
         font-size: 14px;
     }
 }
-
 </style>
 
 <section class="page-title" style="background-image: url(assets/images/background/11.jpg)">
@@ -91,7 +102,7 @@ include "../admin/connection.php";
                     <thead class="cart-header">
                         <tr>
                             <th>Preview</th>
-                            <th class="prod-column">Product</th>
+                            <th class="prod-column">Product / Instructions Spéciales 💡</th>
                             <th class="price">Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
@@ -101,7 +112,7 @@ include "../admin/connection.php";
                     <tbody>
                         <?php
                         $cart_total = 0;
-                        // 🔑 On utilise la nouvelle clé de session pour le panier à emporter
+                        // 🔒 On utilise la clé de session pour le panier à emporter
                         $cart_for_this_user = isset($_SESSION['cart_' . $user_id]) ? $_SESSION['cart_' . $user_id] : [];
 
                         if (count($cart_for_this_user) > 0) {
@@ -111,6 +122,8 @@ include "../admin/connection.php";
                                 $price = floatval($item['price']);
                                 $total = $qty * $price;
                                 $cart_total += $total;
+                                // 💡 Récupérer le commentaire
+                                $comment = isset($item['comment']) ? htmlspecialchars($item['comment']) : '';
                         ?>
                                 <tr data-itemid="<?= intval($item['id']) ?>">
                                     <td class="prod-column">
@@ -118,7 +131,14 @@ include "../admin/connection.php";
                                             <figure class="prod-thumb"><a href="#"><img src="../admin/<?= htmlspecialchars($item['image']) ?>" alt=""></a></figure>
                                         </div>
                                     </td>
-                                    <td><h4 class="prod-title"><?= htmlspecialchars($item['name']) ?></h4></td>
+                                    <td>
+                                        <h4 class="prod-title"><?= htmlspecialchars($item['name']) ?></h4>
+                                        <?php if (!empty($comment)): ?>
+                                            <span class="comment-display">
+                                                 Instructions: <?= $comment ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="sub-total"><?= number_format($price, 2) ?></td>
                                     <td class="qty">
                                         <div class="item-quantity">
@@ -175,9 +195,31 @@ document.addEventListener("DOMContentLoaded", function() {
     const quantityInputs = document.querySelectorAll(".quantity-spinner");
 
     quantityInputs.forEach(input => {
+        // Ajoute un écouteur d'événement 'change'
         input.addEventListener("change", function() {
             updateRowAndCart(input);
         });
+
+        // Ajoute des écouteurs de clic sur les boutons d'augmentation/diminution
+        const row = input.closest("tr");
+        const upButton = row.querySelector(".bootstrap-touchspin-up");
+        const downButton = row.querySelector(".bootstrap-touchspin-down");
+
+        if (upButton) {
+            upButton.addEventListener("click", function() {
+                setTimeout(() => {
+                    input.dispatchEvent(new Event('change'));
+                }, 100);
+            });
+        }
+
+        if (downButton) {
+            downButton.addEventListener("click", function() {
+                setTimeout(() => {
+                    input.dispatchEvent(new Event('change'));
+                }, 100);
+            });
+        }
     });
 
     function updateRowAndCart(input) {
@@ -216,7 +258,7 @@ function delete_product(id) {
             window.location = "view_carte_takeaway.php";
         }
     };
-    // 🔑 Appel au nouveau fichier de suppression pour la commande à emporter
+    // 🔒 Appel au fichier de suppression pour la commande à emporter
     xmlhttp1.open("GET", "update_from_cart_takeaway.php?id=" + id + "&qty=0", true);
     xmlhttp1.send();
 }
@@ -228,7 +270,7 @@ function update_product(id, qty) {
             console.log(xmlhttp1.responseText);
         }
     };
-    // 🔑 Appel au nouveau fichier de mise à jour pour la commande à emporter
+    // 🔒 Appel au fichier de mise à jour pour la commande à emporter
     xmlhttp1.open("GET", "update_from_cart_takeaway.php?id=" + id + "&qty=" + qty, true);
     xmlhttp1.send();
 }

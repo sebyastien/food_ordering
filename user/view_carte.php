@@ -38,6 +38,13 @@ include "../admin/connection.php";
     box-sizing: border-box;
 }
 
+.comment-display {
+    font-size: 13px;
+    color: #a41a13; /* Couleur de la marque pour le commentaire */
+    margin-top: 5px;
+    display: block;
+}
+
 @media screen and (max-width: 768px) {
     .table-outer {
         overflow-x: auto;
@@ -47,7 +54,7 @@ include "../admin/connection.php";
     }
 
     .cart-table {
-        min-width: 600px; /* largeur mini pour scroll */
+        min-width: 800px; /* Augmenté pour l'espace du commentaire */
         border-collapse: collapse;
     }
 
@@ -55,6 +62,12 @@ include "../admin/connection.php";
         white-space: nowrap; /* Empêche le retour à la ligne */
         padding: 10px;
         vertical-align: middle;
+    }
+    
+    /* Permet au commentaire de s'afficher sur plusieurs lignes */
+    .cart-table td .comment-display {
+        white-space: normal;
+        max-width: 250px;
     }
 
     .cart-table th {
@@ -100,7 +113,7 @@ include "../admin/connection.php";
                     <thead class="cart-header">
                         <tr>
                             <th>Preview</th>
-                            <th class="prod-column">Product</th>
+                            <th class="prod-column">Product / Instructions Spéciales 💡</th>
                             <th class="price">Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
@@ -120,6 +133,8 @@ include "../admin/connection.php";
                                 $price = floatval($item['price']);
                                 $total = $qty * $price;
                                 $cart_total += $total;
+                                // 💡 Récupérer le commentaire
+                                $comment = isset($item['comment']) ? $item['comment'] : '';
                         ?>
                                 <tr data-tbid="<?= intval($item['tb_id']) ?>">
                                     <td class="prod-column">
@@ -127,7 +142,14 @@ include "../admin/connection.php";
                                             <figure class="prod-thumb"><a href="#"><img src="../admin/<?= htmlspecialchars($item['img1']) ?>" alt=""></a></figure>
                                         </div>
                                     </td>
-                                    <td><h4 class="prod-title"><?= htmlspecialchars($item['nm']) ?></h4></td>
+                                    <td>
+                                        <h4 class="prod-title"><?= htmlspecialchars($item['nm']) ?></h4>
+                                        <?php if (!empty($comment)): ?>
+                                            <span class="comment-display">
+                                                 Instructions: <?= htmlspecialchars($comment) ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="sub-total"><?= number_format($price, 2) ?></td>
                                     <td class="qty">
                                         <div class="item-quantity">
@@ -224,7 +246,11 @@ document.addEventListener("DOMContentLoaded", function() {
             updateCartTotal();
 
             const tb_id = row.getAttribute("data-tbid");
-            update_product(tb_id, input.value);
+            // ❗ Note : La fonction update_product actuelle n'a pas été modifiée pour gérer les
+            // articles avec des commentaires distincts. Si deux plats sont dans le panier avec 
+            // le même tb_id mais un commentaire différent, cette mise à jour affectera
+            // potentiellement tous les articles ayant ce tb_id dans la session.
+            update_product(tb_id, input.value); 
         }
     }
 
@@ -233,6 +259,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll("tbody tr").forEach(row => {
             const totalCell = row.querySelector(".price");
             if (totalCell) {
+                // S'assurer de bien parser les totaux de chaque ligne
                 const amount = parseFloat(totalCell.textContent.replace("€", "").replace(',', '.'));
                 if (!isNaN(amount)) total += amount;
             }
@@ -241,7 +268,16 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+// ❗ IMPORTANT : Les fonctions delete_product et update_product
+// ne tiennent pas compte du commentaire dans leur logique. 
+// Dans l'état actuel de votre système, si vous avez deux fois le même plat 
+// (un avec commentaire, un sans), delete_from_cart.php et update_from_cart.php 
+// doivent être adaptés pour cibler l'article *spécifique* de la session.
+
 function delete_product(tb_id) {
+    // Dans l'état actuel, cela supprime tous les items avec ce tb_id. 
+    // Pour une suppression ciblée, il faudrait passer l'index de l'élément dans le panier
+    // ou une clé unique au lieu de juste le tb_id.
     const xmlhttp1 = new XMLHttpRequest();
     xmlhttp1.onreadystatechange = function () {
         if (xmlhttp1.readyState == 4 && xmlhttp1.status == 200) {
@@ -253,6 +289,9 @@ function delete_product(tb_id) {
 }
 
 function update_product(tb_id, qty) {
+    // Similaire à delete_product, cette fonction cible par tb_id.
+    // Elle fonctionnera tant qu'elle trouve une entrée correspondante, 
+    // mais si plusieurs existent, il y a un risque d'erreur ou de comportement inattendu.
     const xmlhttp1 = new XMLHttpRequest();
     xmlhttp1.onreadystatechange = function () {
         if (xmlhttp1.readyState == 4 && xmlhttp1.status == 200) {
