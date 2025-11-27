@@ -3,7 +3,7 @@ session_start();
 
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];
+$roles_autorises = ['admin', 'patron', 'gérant', 'serveur'];
 include "auth_check.php";
 
 include "header.php";

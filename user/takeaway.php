@@ -4,15 +4,10 @@ session_start();
 // Définir le type de commande comme 'takeaway'
 $_SESSION['order_type'] = 'takeaway';
 
-// 🔑 Gérer l'ID de l'utilisateur. On génère un ID unique s'il n'existe pas déjà en session.
+// 🔒 Gérer l'ID de l'utilisateur. On génère un ID unique s'il n'existe pas déjà en session.
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
-
-// Pour les commandes à emporter, nous pouvons définir une valeur par défaut
-// ou simplement omettre le concept de table.
-// Nous allons utiliser un identifiant spécial pour le panier à emporter si nécessaire
-// Pour l'instant, on n'ajoute pas de logique de table pour ce fichier.
 
 include "header.php";
 include "slider.php";
@@ -35,12 +30,14 @@ include "../admin/connection.php";
                 <ul class="filter-tabs filter-btns clearfix">
                     <li class="active filter" data-role="button" data-filter="all">All</li>
                     <?php
-                    $res = mysqli_query($link, "SELECT * FROM food_categories");
+                    $res = mysqli_query($link, "SELECT * FROM food_categories ORDER BY ordre ASC, id ASC");
                     while ($row = mysqli_fetch_assoc($res)) {
-                        $category_class = htmlspecialchars($row["food_categories"]);
+                        $category_name = htmlspecialchars($row["food_categories"]);
+                        // Remplacer les espaces par des tirets pour le filtre CSS
+                        $category_class = str_replace(' ', '-', $category_name);
                         ?>
                         <li class="filter" data-role="button" data-filter=".<?= $category_class ?>">
-                            <?= $category_class ?>
+                            <?= $category_name ?>
                         </li>
                         <?php
                     }
@@ -53,10 +50,12 @@ include "../admin/connection.php";
                 <?php
                 $res = mysqli_query($link, "SELECT * FROM food WHERE is_active = 1");
                 while ($row = mysqli_fetch_assoc($res)) {
-                    $category = htmlspecialchars($row["food_category"]);
+                    $category_name = htmlspecialchars($row["food_category"]);
+                    // Remplacer les espaces par des tirets pour la classe CSS
+                    $category = str_replace(' ', '-', $category_name);
                     $food_name = htmlspecialchars($row["food_name"]);
                     $food_desc = htmlspecialchars(substr($row["food_description"], 0, 30)) . "..";
-                    $food_price = htmlspecialchars($row["food_discount_price"]);
+                    $food_price = htmlspecialchars($row["food_original_price"]);
                     $food_image = htmlspecialchars($row["food_image"]);
                     $food_id = intval($row["id"]);
                     ?>
@@ -67,14 +66,15 @@ include "../admin/connection.php";
                             </figure>
                             <div class="lower-content">
                                 <h4>
-                                    <a href="food_description.php?id=<?= $food_id ?>">
+                                    <a href="food_description_takeaway.php?id=<?= $food_id ?>">
                                         <?= $food_name ?>
                                     </a>
                                 </h4>
                                 <div class="text"><?= $food_desc ?></div>
-                                <div class="price"><?= $food_price ?></div>
+                                <div class="price"><?= $food_price ?>€</div>
+                                <!-- Utilisation de classes CSS au lieu de styles inline -->
                                 <div class="custom-button-container">
-                                    <a href="food_description.php?id=<?= $food_id ?>"
+                                    <a href="food_description_takeaway.php?id=<?= $food_id ?>"
                                        class="custom-btn custom-btn-description">
                                         <span class="txt">Food Description</span>
                                     </a>

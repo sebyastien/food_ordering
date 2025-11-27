@@ -3,7 +3,7 @@ session_start();
 
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];
+$roles_autorises = ['admin', 'patron', 'gérant'];
 include "auth_check.php";
 
 include "header.php";
@@ -83,8 +83,8 @@ $customer_name_filter = isset($_GET['customer_name']) ? trim($_GET['customer_nam
 $payment_method_filter = isset($_GET['payment_method']) ? $_GET['payment_method'] : '';
 $status_filter = isset($_GET['status']) ? $_GET['status'] : '';
 $order_number_filter = isset($_GET['order_number']) ? trim($_GET['order_number']) : '';
-$order_type_filter = isset($_GET['order_type']) ? $_GET['order_type'] : ''; // NOUVEAU filtre
-$table_id_filter = isset($_GET['table_id']) ? trim($_GET['table_id']) : ''; // NOUVEAU filtre
+$order_type_filter = isset($_GET['order_type']) ? $_GET['order_type'] : '';
+$table_id_filter = isset($_GET['table_id']) ? trim($_GET['table_id']) : '';
 
 $where_clauses = [];
 $params = [];
@@ -114,7 +114,6 @@ if (!empty($order_number_filter)) {
     $where_clauses[] = "order_number LIKE ?";
     $params[] = "%" . $order_number_filter . "%";
 }
-// NOUVEAUX filtres
 if (!empty($order_type_filter)) {
     $where_clauses[] = "order_type = ?";
     $params[] = $order_type_filter;
@@ -286,6 +285,7 @@ function formatTableNumber($orderType, $tableNumber) {
                             <select id="status" name="status" class="form-control">
                                 <option value="">Tous</option>
                                 <option value="En attente" <?= $status_filter === 'En attente' ? 'selected' : '' ?>>En attente</option>
+                                <option value="Prête" <?= $status_filter === 'Prête' ? 'selected' : '' ?>>Prête</option>
                                 <option value="Terminée" <?= $status_filter === 'Terminée' ? 'selected' : '' ?>>Terminée</option>
                             </select>
                         </div>
@@ -311,10 +311,10 @@ function formatTableNumber($orderType, $tableNumber) {
 
                         <div class="w-100"></div>
                         <button type="submit" class="btn btn-primary mt-2">
-                             Filtrer
+                            <i class="fa fa-filter"></i> Filtrer
                         </button>
                         <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="btn btn-secondary mt-2 ml-2">
-                           Réinitialiser
+                            <i class="fa fa-redo"></i> Réinitialiser
                         </a>
                     </form>
                 </div>
@@ -344,6 +344,7 @@ function formatTableNumber($orderType, $tableNumber) {
                                 <th>Paiement</th>
                                 <th>N° Commande</th>
                                 <th>Statut</th>
+                                <th>Facture</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -366,23 +367,44 @@ function formatTableNumber($orderType, $tableNumber) {
                                         <code><?= htmlspecialchars($order['order_number']) ?></code>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm <?= $order['status'] === 'Terminée' ? 'btn-success' : 'btn-warning' ?> status-toggle" 
-                                        data-id="<?= $order['id'] ?>" 
-                                        data-status="<?= htmlspecialchars($order['status']) ?>">
-                                        <?= htmlspecialchars($order['status']) ?>
-                                    </button>
+                                        <?php
+                                        $statusClass = 'badge-secondary';
+                                        $statusIcon = 'fa-question-circle';
+                                        
+                                        if ($order['status'] === 'Terminée') {
+                                            $statusClass = 'badge-success';
+                                            $statusIcon = 'fa-check-circle';
+                                        } elseif ($order['status'] === 'Prête') {
+                                            $statusClass = 'badge-info';
+                                            $statusIcon = 'fa-check';
+                                        } elseif ($order['status'] === 'En attente') {
+                                            $statusClass = 'badge-warning';
+                                            $statusIcon = 'fa-clock';
+                                        }
+                                        ?>
+                                        <span class="badge badge-lg <?= $statusClass ?>">
+                                            <i class="fa <?= $statusIcon ?>"></i>
+                                            <?= htmlspecialchars($order['status']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="../user/facture.php?order_number=<?= urlencode($order['order_number']) ?>" 
+                                           class="btn btn-primary btn-sm" 
+                                           title="Télécharger la facture">
+                                            <i class="fa fa-file-pdf"></i> Facture
+                                        </a>
                                     </td>
                                     <td>
                                         <a href="order_details.php?id=<?= $order['id'] ?>" class="btn btn-info btn-sm">
-                                             Détails
+                                            <i class="fa fa-eye"></i> Détails
                                         </a>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="10" class="text-center text-muted py-4">
-                                        <br>
+                                    <td colspan="11" class="text-center text-muted py-4">
+                                        <i class="fa fa-inbox fa-3x mb-3"></i><br>
                                         Aucune commande trouvée avec ces critères
                                     </td>
                                 </tr>
@@ -422,12 +444,12 @@ function formatTableNumber($orderType, $tableNumber) {
                     if ($page > 1): ?>
                         <li class="page-item">
                             <a class="page-link" href="<?= pageUrl($page - 1, $base_url, $query_string) ?>">
-                                Précédent
+                                <i class="fa fa-chevron-left"></i> Précédent
                             </a>
                         </li>
                     <?php else: ?>
                         <li class="page-item disabled">
-                            <span class="page-link"> Précédent</span>
+                            <span class="page-link"><i class="fa fa-chevron-left"></i> Précédent</span>
                         </li>
                     <?php endif; ?>
 
@@ -443,12 +465,12 @@ function formatTableNumber($orderType, $tableNumber) {
                     <?php if ($page < $total_pages): ?>
                         <li class="page-item">
                             <a class="page-link" href="<?= pageUrl($page + 1, $base_url, $query_string) ?>">
-                                Suivant 
+                                Suivant <i class="fa fa-chevron-right"></i>
                             </a>
                         </li>
                     <?php else: ?>
                         <li class="page-item disabled">
-                            <span class="page-link">Suivant </span>
+                            <span class="page-link">Suivant <i class="fa fa-chevron-right"></i></span>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -457,7 +479,7 @@ function formatTableNumber($orderType, $tableNumber) {
 
             <div class="card mt-4">
                 <div class="card-header">
-                    <strong></i> Statistiques</strong>
+                    <strong><i class="fa fa-chart-bar"></i> Statistiques</strong>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
@@ -465,7 +487,7 @@ function formatTableNumber($orderType, $tableNumber) {
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <h6 class="card-title text-primary">
-                                        Semaine
+                                        <i class="fa fa-calendar-week"></i> Semaine
                                     </h6>
                                     <p class="card-text">
                                         <strong><?= $statsWeek['nb_commandes'] ?></strong> commandes<br>
@@ -478,7 +500,7 @@ function formatTableNumber($orderType, $tableNumber) {
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <h6 class="card-title text-info">
-                                        Mois
+                                        <i class="fa fa-calendar-alt"></i> Mois
                                     </h6>
                                     <p class="card-text">
                                         <strong><?= $statsMonth['nb_commandes'] ?></strong> commandes<br>
@@ -491,7 +513,7 @@ function formatTableNumber($orderType, $tableNumber) {
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <h6 class="card-title text-warning">
-                                       Année
+                                        <i class="fa fa-calendar"></i> Année
                                     </h6>
                                     <p class="card-text">
                                         <strong><?= $statsYear['nb_commandes'] ?></strong> commandes<br>
@@ -505,7 +527,7 @@ function formatTableNumber($orderType, $tableNumber) {
                                 <div class="card bg-light">
                                     <div class="card-body">
                                         <h6 class="card-title text-black">
-                                           Filtré
+                                            <i class="fa fa-filter"></i> Filtré
                                         </h6>
                                         <p class="card-text">
                                             <strong><?= $statsFiltered['nb_commandes'] ?></strong> commandes<br>
@@ -521,7 +543,7 @@ function formatTableNumber($orderType, $tableNumber) {
 
             <div class="card mt-4">
                 <div class="card-header">
-                    <strong>Commandes par jour</strong>
+                    <strong><i class="fa fa-list"></i> Commandes par jour</strong>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -529,7 +551,7 @@ function formatTableNumber($orderType, $tableNumber) {
                             <thead class="thead-light">
                                 <tr>
                                     <th>Jour</th>
-                                    <th> Nombre de commandes</th>
+                                    <th><i class="fa fa-shopping-cart"></i> Nombre de commandes</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -545,7 +567,7 @@ function formatTableNumber($orderType, $tableNumber) {
                                 <?php else: ?>
                                     <tr>
                                         <td colspan="2" class="text-center text-muted">
-                                           Aucune donnée disponible
+                                            <i class="fa fa-info-circle"></i> Aucune donnée disponible
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -561,64 +583,6 @@ function formatTableNumber($orderType, $tableNumber) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Logique pour le bouton de statut
-    document.querySelectorAll('.status-toggle').forEach(function(elem) {
-        elem.addEventListener('click', function(e) {
-            e.preventDefault();
-            const orderId = this.dataset.id;
-            const currentStatus = this.dataset.status;
-            let newStatus = (currentStatus === "En attente") ? "Terminée" : "En attente";
-            
-            // Désactiver le bouton pendant la requête
-            this.disabled = true;
-            const originalContent = this.innerHTML;
-            this.innerHTML = 'Mise à jour...';
-
-            fetch('update_order_status.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `id=${orderId}&status=${encodeURIComponent(newStatus)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Mettre à jour l'affichage du bouton
-                    this.textContent = newStatus;
-                    this.dataset.status = newStatus;
-                    
-                    // Changer les classes CSS selon le nouveau statut
-                    this.classList.remove('btn-warning', 'btn-success');
-                    if (newStatus === 'Terminée') {
-                        this.classList.add('btn-success');
-                        this.innerHTML = ' ' + newStatus;
-                    } else {
-                        this.classList.add('btn-warning');
-                        this.innerHTML = '' + newStatus;
-                    }
-                    
-                    // Animation de confirmation
-                    this.style.transform = 'scale(1.1)';
-                    setTimeout(() => {
-                        this.style.transform = 'scale(1)';
-                    }, 150);
-                } else {
-                    alert("Erreur lors de la mise à jour du statut : " + (data.error || 'Erreur inconnue'));
-                    this.innerHTML = originalContent;
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert("Erreur réseau lors de la mise à jour du statut");
-                this.innerHTML = originalContent;
-            })
-            .finally(() => {
-                this.disabled = false;
-            });
-        });
-    });
-
     // Logique pour les champs de date
     const periodSelect = document.getElementById('period');
     const startDateInput = document.getElementById('date_start');
@@ -635,7 +599,6 @@ document.addEventListener('DOMContentLoaded', function() {
             endDateInput.disabled = true;
             startDateInput.parentElement.classList.add('text-muted');
             endDateInput.parentElement.classList.add('text-muted');
-            // Conserver les valeurs pour éviter de les perdre
         }
     }
 
@@ -645,11 +608,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Écouteur pour le changement de période
     periodSelect.addEventListener('change', function() {
         toggleDateInputs();
-        // Auto-submit optionnel si période prédéfinie
-        if (this.value !== 'custom') {
-            // Optionnel : soumettre automatiquement le formulaire
-            // this.form.submit();
-        }
     });
     
     // Animation des badges au survol
@@ -661,35 +619,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'scale(1)';
         });
     });
-    
-    // Amélioration de l'UX : confirmation avant changement de statut pour les commandes importantes
-    document.querySelectorAll('.status-toggle').forEach(function(elem) {
-        const orderId = elem.dataset.id;
-        const row = elem.closest('tr');
-        const totalPrice = parseFloat(row.cells[5].textContent.replace(/[^\d.,]/g, '').replace(',', '.'));
-        
-        // Pour les commandes importantes (>50€), demander confirmation
-        if (totalPrice > 50) {
-            elem.addEventListener('click', function(e) {
-                const currentStatus = this.dataset.status;
-                const newStatus = (currentStatus === "En attente") ? "Terminée" : "En attente";
-                
-                if (!confirm(`Confirmer le changement de statut vers "${newStatus}" pour cette commande de ${totalPrice.toFixed(2)}€ ?`)) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-            }, true); // Utiliser capture pour intercepter avant l'autre listener
-        }
-    });
 });
-
-// Fonction pour exporter les résultats (bonus)
-function exportResults() {
-    const params = new URLSearchParams(window.location.search);
-    params.set('export', '1');
-    window.location.href = window.location.pathname + '?' + params.toString();
-}
 
 // Raccourcis clavier
 document.addEventListener('keydown', function(e) {
@@ -712,13 +642,10 @@ document.addEventListener('keydown', function(e) {
     transition: transform 0.2s ease;
 }
 
-.status-toggle {
-    transition: all 0.3s ease;
-    min-width: 100px;
-}
-
-.status-toggle:disabled {
-    opacity: 0.7;
+.badge-lg {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    transition: transform 0.2s ease;
 }
 
 .table th {
@@ -743,7 +670,7 @@ document.addEventListener('keydown', function(e) {
         font-size: 0.9em;
     }
     
-    .status-toggle {
+    .badge-lg {
         min-width: auto;
         padding: 0.25rem 0.5rem;
         font-size: 0.8rem;
@@ -760,13 +687,27 @@ tbody tr:hover {
 }
 
 /* Styles pour les badges de type de commande */
-.badge-success { background-color: #28a745 !important; }
-.badge-warning { background-color: #ffc107 !important; color: #212529 !important; }
-.badge-info { background-color: #17a2b8 !important; }
-.badge-primary { background-color: #007bff !important; }
-.badge-secondary { background-color: #6c757d !important; }
+.badge-success { 
+    background-color: #28a745 !important; 
+}
+
+.badge-warning { 
+    background-color: #ffc107 !important; 
+    color: #212529 !important; 
+}
+
+.badge-info { 
+    background-color: #17a2b8 !important; 
+    color: white !important;
+}
+
+.badge-primary { 
+    background-color: #007bff !important; 
+}
+
+.badge-secondary { 
+    background-color: #6c757d !important; 
+}
 </style>
 
 <?php include "footer.php"; ?>
-
-

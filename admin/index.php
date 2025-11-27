@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit1"])) {
 
         ?>
         <script type="text/javascript">
-            window.location = "dashboard.php";
+            window.location = "acceuil.php";
         </script>
         <?php
     } else {

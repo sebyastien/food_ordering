@@ -1,7 +1,7 @@
 <?php
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];
+$roles_autorises = ['admin', 'patron', 'gérant'];
 include "auth_check.php";
 
 include "header.php";
@@ -53,9 +53,7 @@ if ($status === -1) {
                         <th>food name</th>
                         <th>food category</th>
                         <th>food description</th>
-                        <th>food original price</th>
-                        <th>food discount price</th>
-                        <th>food availibility</th>
+                        <th>food price</th>
                         <th>food veg / nonveg</th>
                         <th>food ingredients</th>
                         <th>Actions</th>
@@ -73,9 +71,7 @@ if ($status === -1) {
                         echo "<td>{$row['food_name']}</td>";
                         echo "<td>{$row['food_category']}</td>";
                         echo "<td>{$row['food_description']}</td>";
-                        echo "<td>{$row['food_original_price']}</td>";
-                        echo "<td>{$row['food_discount_price']}</td>";
-                        echo "<td>{$row['food_avaibility']}</td>";
+                        echo "<td>{$row['food_original_price']}</td>"; // CHANGÉ ICI
                         echo "<td>{$row['food_veg_nonveg']}</td>";
                         echo "<td>{$row['food_ingredients']}</td>";
                         echo "<td><a href='edit_food.php?id={$row['id']}' style='color:green'>Edit</a>";

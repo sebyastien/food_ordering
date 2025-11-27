@@ -12,20 +12,20 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $error = '';
 $order_number = '';
-$customer_name = '';
+// $customer_name a été supprimé
 
 // ⏳ Traitement du formulaire
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST['order_number']) && isset($_POST['customer_name'])) {
+    // On ne vérifie que la présence de 'order_number'
+    if (isset($_POST['order_number'])) {
         $order_number = trim($_POST['order_number']);
-        $customer_name = trim($_POST['customer_name']);
 
-        if (empty($order_number) || empty($customer_name)) {
-            $error = "Veuillez remplir tous les champs.";
+        if (empty($order_number)) {
+            $error = "Veuillez saisir votre numéro de commande.";
         } else {
-            // Requête sécurisée
-            $stmt = $link->prepare("SELECT id FROM orders WHERE order_number = ? AND LOWER(customer_name) = LOWER(?)");
-            $stmt->bind_param("ss", $order_number, $customer_name);
+            // Requête MODIFIÉE : Ne vérifie que le numéro de commande
+            $stmt = $link->prepare("SELECT id FROM orders WHERE order_number = ?");
+            $stmt->bind_param("s", $order_number); // Un seul paramètre
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 header("Location: track_order.php?order_number=" . urlencode($order_number));
                 exit(); // 🚨 INDISPENSABLE pour stopper ici
             } else {
-                $error = "Numéro de commande ou nom du client incorrect.";
+                $error = "Numéro de commande incorrect.";
             }
 
             $stmt->close();
@@ -66,7 +66,7 @@ $link->close();
 
 <div class="container mt-5">
     <div class="card p-4">
-        <h4 class="card-title text-center mb-4">Retrouver ma commande</h4>
+        <h4 class="card-title text-center mb-4">Suivi de commande</h4>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger" role="alert">
@@ -79,11 +79,6 @@ $link->close();
                 <label for="order_number" class="form-label">Numéro de commande</label>
                 <input type="text" class="form-control" id="order_number" name="order_number"
                        value="<?= htmlspecialchars($order_number) ?>" required>
-            </div>
-            <div class="mb-3">
-                <label for="customer_name" class="form-label">Nom du client</label>
-                <input type="text" class="form-control" id="customer_name" name="customer_name"
-                       value="<?= htmlspecialchars($customer_name) ?>" required>
             </div>
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">Suivre ma commande</button>

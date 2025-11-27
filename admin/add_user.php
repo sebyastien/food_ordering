@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin_username']) || !isset($_SESSION['admin_role']) || $_
 
 include "connection.php";
 
-$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+$roles_autorises = ['admin', 'patron', 'gérant'];  // adapter selon la page
 include "auth_check.php";
 
 include "header.php";
@@ -71,6 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_user'])) {
                 <select class="form-control" id="role" name="role" required>
                     <option value="gérant">Gérant</option>
                     <option value="patron">Patron</option>
+                    <option value="serveur">Serveur</option>
                 </select>
             </div>
             <div class="d-grid gap-2">

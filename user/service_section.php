@@ -52,43 +52,7 @@
 				</div>
 			</div>
 
-			<!-- Newsletter Section -->
-			<div class="newsletter-section">
-				<div class="auto-container">
-					<div class="inner-container">
-
-						<div class="row clearfix">
-
-							<!-- Title Column -->
-							<div class="title-column col-lg-6 col-md-12 col-sm-12">
-								<div class="inner-column">
-									<h2>Subscribe to newsletter</h2>
-									<div class="text">Get weekly offer and discounts</div>
-								</div>
-							</div>
-
-							<!-- Form Column -->
-							<div class="form-column col-lg-6 col-md-12 col-sm-12">
-								<div class="inner-column">
-									<!--Emailed Form-->
-									<div class="emailed-form">
-										<form method="post" action="http://designarc.biz/demos/wengdo/contact.html">
-											<div class="form-group">
-												<input type="email" name="email" value=""
-													placeholder="Enter your email address" required>
-												<button type="submit" class="theme-btn">Subscribe</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-
-						</div>
-
-					</div>
-				</div>
-			</div>
-			<!-- End Newsletter Section -->
+			
 
 		</section>
 		<!-- End Services Section -->

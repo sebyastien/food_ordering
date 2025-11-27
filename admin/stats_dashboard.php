@@ -1,6 +1,6 @@
 <?php
 // Vérification d'accès
-$roles_autorises = ['admin', 'patron', 'gerant'];
+$roles_autorises = ['admin', 'patron', 'gérant'];
 include "auth_check.php";
 include "connection.php"; // connexion MySQL
 
