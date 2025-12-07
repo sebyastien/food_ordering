@@ -429,7 +429,6 @@
   .main-header .header-upper .header-mobile-content {
       display: flex;
       justify-content: space-between; 
-      align-items: center; /* ALIGNEMENT VERTICAL PRINCIPAL (le centre) */
       padding: 10px 15px; 
   }
 

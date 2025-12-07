@@ -60,6 +60,12 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     
     <style>
+
+        @media (min-width: 992px) {
+    .main-header .header-upper .logo-outer {
+        margin-top: -25px; /* Ajustez ce chiffre pour monter plus ou moins */
+    }
+}
         /* Augmente l'espace autour du contenu de l'en-tête principal */
         .main-header .header-upper .inner-container {
             padding-top: 5px; /* Ajout d'espace en haut */
@@ -71,6 +77,38 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
             padding: 10px 0; /* Augmente le padding vertical */
         }
         
+          /* Ajustements pour mobile uniquement */
+        @media (max-width: 991px) {
+            /* Aligner logo et hamburger sur la mÃªme ligne */
+            .header-upper .inner-container .header-mobile-content {
+                display: flex !important;
+                justify-content: space-between !important;
+                padding: 10px 15px !important;
+            }
+            
+            .header-upper .inner-container .logo-outer {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .header-upper .logo-outer .logo {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Ajuster l'image du logo */
+            .header-upper .logo img {
+                max-height: 60px !important;
+                width: auto !important;
+            }
+        }
+        
+        /* Pour les très petits écrans */
+        @media (max-width: 575px) {
+            .header-upper .inner-container .logo-outer {
+                top: 5px !important;
+            }
+        }
     </style>
     </head>
 
@@ -135,7 +173,6 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
                                 <div class="cart-btn">
                                     <a href="<?= $cart_link ?>" title="Shopping Cart">
                                         <i class="flaticon-shopping-bag"></i>
-                                        <span class="count"><?= $total_items ?></span>
                                     </a>
                                 </div>
                             </div>
