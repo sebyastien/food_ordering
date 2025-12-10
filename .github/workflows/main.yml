@@ -1,0 +1,28 @@
+name: Semgrep SAST
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  semgrep:
+    permissions:
+      security-events: write
+      contents: read
+    runs-on: ubuntu-latest
+
+    container:
+      image: returntocorp/semgrep
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Semgrep scan
+        run: semgrep scan --config=auto --sarif --output=semgrep.sarif || true
+        # IMPORTANT : "|| true" empêche l'échec du job
+
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
