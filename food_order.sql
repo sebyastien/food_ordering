@@ -154,7 +154,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `user_id` varchar(255) DEFAULT NULL,
   `order_type` varchar(50) NOT NULL DEFAULT 'table',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=166 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=166 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+;
 
 --
 -- Déchargement des données de la table `orders`
@@ -336,7 +337,8 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `item_comment` text,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=272 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=272 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+;
 
 --
 -- Déchargement des données de la table `order_items`
