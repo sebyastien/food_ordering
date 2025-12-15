@@ -79,7 +79,7 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
         
           /* Ajustements pour mobile uniquement */
         @media (max-width: 991px) {
-            /* Aligner logo et hamburger sur la mÃªme ligne */
+            /* Aligner logo et hamburger sur la même ligne */
             .header-upper .inner-container .header-mobile-content {
                 display: flex !important;
                 justify-content: space-between !important;
@@ -110,7 +110,7 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
             }
         }
     </style>
-    </head>
+</head>
 
 <body>
 
@@ -213,4 +213,49 @@ if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
                         </nav></div>
                 </div>
             </div>
-            </header>
+        </header>
+
+    <script src="assets/js/jquery.js"></script>
+    <script>
+        // Fermeture automatique du menu hamburger
+        $(document).ready(function() {
+            let menuTimeout;
+            
+            function startMenuTimer($collapseElement) {
+                clearTimeout(menuTimeout);
+                menuTimeout = setTimeout(function() {
+                    if ($collapseElement.hasClass('show')) {
+                        $collapseElement.collapse('hide');
+                    }
+                }, 5000); // 10 secondes
+            }
+            
+            // Fermeture du menu lors du défilement de la page (montée ou descente)
+            $(window).on('scroll', function() {
+                $('#navbarSupportedContent').collapse('hide');
+                $('#navbarSupportedContent1').collapse('hide');
+            });
+            
+            // Pour le menu principal
+            $('#navbarSupportedContent').on('shown.bs.collapse', function() {
+                startMenuTimer($(this));
+            });
+            
+            $('#navbarSupportedContent').on('click', function() {
+                if ($(this).hasClass('show')) {
+                    startMenuTimer($(this));
+                }
+            });
+            
+            // Pour le menu sticky
+            $('#navbarSupportedContent1').on('shown.bs.collapse', function() {
+                startMenuTimer($(this));
+            });
+            
+            $('#navbarSupportedContent1').on('click', function() {
+                if ($(this).hasClass('show')) {
+                    startMenuTimer($(this));
+                }
+            });
+        });
+    </script>
