@@ -139,6 +139,7 @@ function getRoleIcon($role) {
     </div>
 </div>
 
+<!-- Modal de confirmation -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -170,31 +171,6 @@ function getRoleIcon($role) {
         </div>
     </div>
 </div>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Gestionnaire pour les boutons de suppression
-    document.querySelectorAll('.delete-user-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const userId = this.dataset.id;
-            const username = this.dataset.username;
-            
-            // Remplir le modal avec les infos
-            document.getElementById('username-to-delete').textContent = username;
-            document.getElementById('delete-user-id').value = userId;
-            
-            // Afficher le modal (Nécessite jQuery/Bootstrap JS)
-            $('#deleteModal').modal('show');
-        });
-    });
-
-    // Auto-fermeture des alertes après 5 secondes (Nécessite jQuery)
-    setTimeout(function() {
-        $('.alert').fadeOut('slow');
-    }, 5000);
-});
-</script>
 
 <style>
 .table-hover tbody tr:hover {
@@ -231,6 +207,81 @@ tbody td {
     opacity: 1;
 }
 </style>
+
+<!-- Scripts JavaScript - IMPORTANT : À placer avant la fermeture de body -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Script chargé !'); // Pour déboguer
+    
+    // Gestionnaire pour les boutons de suppression
+    const deleteButtons = document.querySelectorAll('.delete-user-btn');
+    console.log('Boutons trouvés:', deleteButtons.length); // Pour déboguer
+    
+    deleteButtons.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault(); // Empêcher tout comportement par défaut
+            
+            const userId = this.getAttribute('data-id');
+            const username = this.getAttribute('data-username');
+            
+            console.log('Clic détecté - ID:', userId, 'Username:', username); // Pour déboguer
+            
+            // Remplir le modal avec les infos
+            document.getElementById('username-to-delete').textContent = username;
+            document.getElementById('delete-user-id').value = userId;
+            
+            // Vérifier si jQuery et Bootstrap sont disponibles
+            if (typeof jQuery !== 'undefined' && typeof jQuery.fn.modal !== 'undefined') {
+                // Utiliser jQuery si disponible
+                jQuery('#deleteModal').modal('show');
+                console.log('Modal ouvert avec jQuery');
+            } else if (typeof bootstrap !== 'undefined') {
+                // Utiliser Bootstrap 5 natif si disponible
+                const modalElement = document.getElementById('deleteModal');
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+                console.log('Modal ouvert avec Bootstrap 5');
+            } else {
+                // Solution de secours avec confirmation simple
+                console.warn('Bootstrap modal non disponible, utilisation de confirm()');
+                if (confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur "' + username + '" ?\n\nCette action est irréversible.')) {
+                    // Créer et soumettre un formulaire
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'delete_user.php';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'user_id';
+                    input.value = userId;
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        });
+    });
+
+    // Auto-fermeture des alertes après 5 secondes
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            // Vérifier si jQuery est disponible
+            if (typeof jQuery !== 'undefined') {
+                jQuery(alert).fadeOut('slow');
+            } else {
+                // Solution native
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.style.display = 'none';
+                }, 500);
+            }
+        });
+    }, 5000);
+});
+</script>
 
 <?php
 include "footer.php";
