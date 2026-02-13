@@ -16,20 +16,36 @@ if ($order_type === 'takeaway') {
 } else {
     // Si c'est une commande de type 'table', on utilise le table_id
     $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
-    $home_link = 'index.php?table_id=' . $table_id;
-    $cart_link = 'view_carte.php?table_id=' . $table_id;
+    // CORRECTION : Pas de paramètre table_id dans l'URL pour Home
+    $home_link = 'index.php';
+    // CORRECTION : Pas de paramètre table_id pour le panier non plus car la session gère déjà tout
+    $cart_link = 'view_carte.php';
 }
 
 
 // Calcul du nombre total d'articles dans le panier
 $total_items = 0;
-// On utilise le bon nom de panier basé sur le mode
-$cart_key = ($order_type === 'takeaway') ? 'cart_' . ($_SESSION['user_id'] ?? '') : 'cart';
 
-if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
-    foreach ($_SESSION[$cart_key] as $item) {
-        if (isset($item['qty_total'])) {
-            $total_items += intval($item['qty_total']);
+if ($order_type === 'takeaway') {
+    // Mode takeaway : utilise l'ancien système
+    $cart_key = 'cart_' . ($_SESSION['user_id'] ?? '');
+    if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
+        foreach ($_SESSION[$cart_key] as $item) {
+            if (isset($item['qty_total'])) {
+                $total_items += intval($item['qty_total']);
+            }
+        }
+    }
+} else {
+    // Mode table : utilise le NOUVEAU système carts_by_table
+    $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
+    $user_id = $_SESSION['user_id'] ?? '';
+    
+    if ($table_id > 0 && $user_id && isset($_SESSION['carts_by_table'][$table_id][$user_id])) {
+        foreach ($_SESSION['carts_by_table'][$table_id][$user_id] as $item) {
+            if (isset($item['qty_total'])) {
+                $total_items += intval($item['qty_total']);
+            }
         }
     }
 }

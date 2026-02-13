@@ -1,6 +1,23 @@
 <?php
 session_start();
 
+// ================================
+// CONNEXION À LA BASE DE DONNÉES
+// ================================
+// IMPORTANT : Charger connection.php EN PREMIER
+if (!isset($link)) {
+    include "../admin/connection.php";
+}
+
+// ================================
+// VALIDATION DE SESSION
+// ================================
+// Maintenant que $link existe, on peut valider la session
+require_once "session_validator.php";
+
+// ================================
+// CONFIGURATION
+// ================================
 // Définir le type de commande comme 'table'
 $_SESSION['order_type'] = 'table';
 
@@ -9,18 +26,19 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
 
-// Gérer l'ID de la table
-if (isset($_GET['table_id'])) {
-    $_SESSION['table_id'] = intval($_GET['table_id']);
-}
-$table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
+// Récupérer les informations de la table depuis la session validée
+$table_id = $_SESSION['table_id'];
+$table_name = $_SESSION['table_name'];
+$user_id = $_SESSION['user_id'];
 
+// ================================
+// INCLURE LES FICHIERS DE LAYOUT
+// ================================
 include "header.php";
 include "slider.php";
-include "../admin/connection.php";
 ?>
 
-<title>Home Page</title>
+<title>Menu - <?= htmlspecialchars($table_name) ?></title>
 
 <style>
 /* Styles responsive pour la grille de produits */
@@ -263,20 +281,48 @@ include "../admin/connection.php";
         flex: 0 0 33.333%;
     }
 }
+
+/* Bannière d'information de session */
+.session-info-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.session-info-banner i {
+    margin: 0 8px;
+}
+
+.session-info-banner strong {
+    font-weight: 600;
+}
 </style>
+
+<!-- Bannière d'information -->
+<div class="session-info-banner">
+    <i class="fas fa-table"></i>
+    <strong><?= htmlspecialchars($table_name) ?></strong>
+    <i class="fas fa-check-circle"></i>
+    Session active
+</div>
 
 <section class="products-section">
     <div class="auto-container">
 
         <div class="sec-title centered">
-            <h2>Our Products</h2>
+            <h2>Notre Menu</h2>
         </div>
 
         <div class="mixitup-gallery">
 
             <div class="filters clearfix">
                 <ul class="filter-tabs filter-btns clearfix">
-                    <li class="active filter" data-role="button" data-filter="all">All</li>
+                    <li class="active filter" data-role="button" data-filter="all">Tout</li>
                     <?php
                     $res = mysqli_query($link, "SELECT * FROM food_categories ORDER BY ordre ASC, id ASC");
                     while ($row = mysqli_fetch_assoc($res)) {
@@ -312,14 +358,14 @@ include "../admin/connection.php";
                             </figure>
                             <div class="lower-content">
                                 <h4>
-                                    <a href="food_description.php?id=<?= $food_id ?>&table_id=<?= $table_id ?>">
+                                    <a href="food_description.php?id=<?= $food_id ?>">
                                         <?= $food_name ?>
                                     </a>
                                 </h4>
                                 <div class="text"><?= $food_desc ?></div>
                                 <div class="price"><?= $food_price ?>€</div>
                                 <div class="custom-button-container">
-                                    <a href="food_description.php?id=<?= $food_id ?>&table_id=<?= $table_id ?>"
+                                    <a href="food_description.php?id=<?= $food_id ?>"
                                        class="custom-btn custom-btn-description">
                                         <span class="txt">Voir détails</span>
                                     </a>
@@ -344,7 +390,7 @@ include "../admin/connection.php";
 </section>
 
 <div class="cart-button-container">
-    <a href="view_carte.php?table_id=<?= $table_id ?>"
+    <a href="view_carte.php"
        style="
            display: inline-block;
            background-color: #a41a13;
