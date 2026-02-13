@@ -78,6 +78,16 @@
                         <a href="qr_generator_page.php"> <i class="menu-icon fa fa-dashboard"></i>Génération de Qr Code</a>
                     </li>
                     <?php endif; ?>
+<<<<<<< Updated upstream
+=======
+                    <li class="active">
+                        <a href="server_orders.php"> <i class="menu-icon fa fa-dashboard"></i>Serveur</a>
+                    </li>
+                    <!-- NOUVEAU: Lien vers la gestion des tables -->
+                    <li class="active">
+                        <a href="manage_tables.php"> <i class="menu-icon fa fa-table"></i>Gestion des Tables</a>
+                    </li>
+>>>>>>> Stashed changes
                 </ul>
             </div></nav>
     </aside><div id="right-panel" class="right-panel">

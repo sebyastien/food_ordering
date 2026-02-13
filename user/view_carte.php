@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+<<<<<<< Updated upstream
 // Gérer l'ID de la table
 if (isset($_GET['table_id'])) {
     $_SESSION['table_id'] = intval($_GET['table_id']);
@@ -8,12 +9,25 @@ if (isset($_GET['table_id'])) {
 $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
 
 // 🔑 Gérer l'ID de l'utilisateur
+=======
+// ================================
+// SÉCURITÉ : Validation de session
+// ================================
+require_once "session_validator.php";
+
+// Gérer l'ID de l'utilisateur
+>>>>>>> Stashed changes
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
+
+$table_id = $_SESSION['table_id'];
+$table_name = $_SESSION['table_name'];
 $user_id = $_SESSION['user_id'];
 
 include "header.php";
+include "../admin/connection.php";
+?>
 include "../admin/connection.php";
 ?>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">

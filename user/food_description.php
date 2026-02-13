@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+<<<<<<< Updated upstream
 
 // Gérer l'ID de la table
 if (isset($_GET['table_id'])) {
@@ -9,9 +10,20 @@ if (isset($_GET['table_id'])) {
 $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
 
 // 🔑 Gérer l'ID de l'utilisateur
+=======
+// ================================
+// SÉCURITÉ : Validation de session
+// ================================
+require_once "session_validator.php";
+
+// Gérer l'ID de l'utilisateur
+>>>>>>> Stashed changes
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
+
+$table_id = $_SESSION['table_id'];
+$table_name = $_SESSION['table_name'];
 $user_id = $_SESSION['user_id'];
 
 // Le reste du code de la page...
@@ -90,7 +102,7 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- End Shop Single Section -->
 
 <div style="margin-top: 30px; text-align: center;">
-    <a href="view_carte.php?table_id=<?= $table_id ?>" 
+    <a href="view_carte.php" 
        style="
          display: inline-block;
          background-color: #a41a13;
@@ -132,14 +144,14 @@ if ($row = mysqli_fetch_array($res)) {
                         </figure>
                         <div class="lower-content">
                             <h4>
-                                <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>">
+                                <a href="food_description.php?id=<?php echo $row["id"]; ?>">
                                     <?php echo $row["food_name"]; ?>
                                 </a>
                             </h4>
                             <div class="text"><?php echo substr($row["food_description"], 0, 30); ?>...</div>
                             <div class="price"><?php echo $row["food_discount_price"]; ?> </div>
                             <div class="lower-box">
-                                <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>" class="theme-btn btn-style-five">
+                                <a href="food_description.php?id=<?php echo $row["id"]; ?>" class="theme-btn btn-style-five">
                                     <span class="txt">Food description</span>
                                 </a>
                             </div>
@@ -158,6 +170,7 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- JavaScript -->
 <script type="text/javascript">
     function add_to_cart(id, qty) {
+<<<<<<< Updated upstream
     var table_id = <?php echo $table_id; ?>;
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "add_to_cart.php", true);
@@ -166,6 +179,17 @@ if ($row = mysqli_fetch_array($res)) {
         if (xhr.readyState == 4 && xhr.status == 200) {
             try {
                 var res = JSON.parse(xhr.responseText);
+=======
+        var comment = document.getElementById('order-comment').value.trim();
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "add_to_cart.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                try {
+                    var res = JSON.parse(xhr.responseText);
+>>>>>>> Stashed changes
 
                 // Création d’une alerte visuelle similaire à index.php
                 let alertBox = document.createElement("div");
@@ -193,10 +217,18 @@ if ($row = mysqli_fetch_array($res)) {
             } catch {
                 alert("Erreur lors de l'ajout au panier.");
             }
+<<<<<<< Updated upstream
         }
     };
     xhr.send("id=" + encodeURIComponent(id) + "&qty=" + encodeURIComponent(qty) + "&table_id=" + encodeURIComponent(table_id));
 }
+=======
+        };
+        xhr.send("id=" + encodeURIComponent(id) + 
+                 "&qty=" + encodeURIComponent(qty) + 
+                 "&comment=" + encodeURIComponent(comment));
+    }
+>>>>>>> Stashed changes
 </script>
 
 <?php
