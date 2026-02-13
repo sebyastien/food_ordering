@@ -1,0 +1,48 @@
+{
+  "name": "Restaurant Manager - Gestion Tables",
+  "short_name": "RestauManager",
+  "description": "Application de gestion des tables et sessions pour serveurs",
+  "start_url": "/admin/mobile_app.php",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#a40301",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-1.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Ouvrir une table",
+      "short_name": "Ouvrir",
+      "description": "Ouvrir rapidement une table",
+      "url": "/admin/mobile_app.php?action=open",
+      "icons": [{ "src": "/assets/icon-open.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Sessions actives",
+      "short_name": "Actives",
+      "description": "Voir les sessions en cours",
+      "url": "/admin/mobile_app.php?action=active",
+      "icons": [{ "src": "/assets/icon-active.png", "sizes": "96x96" }]
+    }
+  ]
+}

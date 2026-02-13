@@ -1,30 +1,42 @@
 <?php
 session_start();
 
-// Si la variable table_id est passée en GET, on la stocke en session
-if (isset($_GET['table_id'])) {
-    $_SESSION['table_id'] = intval($_GET['table_id']);
+// ================================
+// ENCODAGE UTF-8
+// ================================
+header('Content-Type: text/html; charset=UTF-8');
+
+// ================================
+// SÉCURITÉ : Validation de session
+// ================================
+// SEULEMENT pour l'affichage du formulaire (GET)
+// PAS pour la confirmation (POST)
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    require_once "session_validator.php";
 }
 
-// On récupère la valeur en session. Si elle n'existe pas, on redirige.
-$table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
-// 🔒 Ajout de la récupération de l'ID de l'utilisateur
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+// La session est validée - récupérer les informations
+$table_id = $_SESSION['table_id'];
+$table_name = $_SESSION['table_name'];
+$user_id = $_SESSION['user_id'] ?? null;
+$session_token = $_SESSION['session_token'] ?? null;
 
-// Vérifier que l'ID de la table et de l'utilisateur sont présents
-if ($table_id === 0 || !$user_id) {
-    // Redirection si l'ID de la table ou de l'utilisateur est manquant
+// Vérifier que l'utilisateur est identifié
+if (!$user_id) {
     header("Location: index.php");
-    exit("Erreur : ID de table ou d'utilisateur manquant. Redirection en cours.");
+    exit("Erreur : Utilisateur non identifié.");
 }
 
 include "header.php";
 include "../admin/connection.php";
+require_once "../admin/TableSessionManager.php";
 
-// 🔒 On accède au panier spécifique à l'utilisateur actuel.
+$sessionManager = new TableSessionManager($link);
+
+// Accès au panier spécifique à l'utilisateur actuel
 $cart_for_this_user = isset($_SESSION['carts_by_table'][$table_id][$user_id]) ? $_SESSION['carts_by_table'][$table_id][$user_id] : [];
 
-// Vérifier si le panier de l'utilisateur est vide.
+// Vérifier si le panier de l'utilisateur est vide
 if (count($cart_for_this_user) === 0) {
     echo "<section class='page-title' style='background-image: url(assets/images/background/11.jpg)'>
               <div class='auto-container'>
@@ -41,13 +53,12 @@ if (count($cart_for_this_user) === 0) {
 }
 
 $cart_total = 0;
-// 🔒 Boucler sur le panier de l'utilisateur
 foreach ($cart_for_this_user as $item) {
     $qty = intval($item['qty_total']);
     $price = floatval($item['price']);
     $cart_total += $qty * $price;
 }
-$cart_total = number_format($cart_total, 2);
+$cart_total_formatted = number_format($cart_total, 2);
 
 $error = "";
 $client_name = "";
@@ -60,7 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($client_name) || empty($payment_method)) {
         $error = "Le nom du client et le mode de paiement sont obligatoires.";
     } else {
-        // 🔒 Utilisation du panier de l'utilisateur pour la validation de la commande
+        // ================================
+        // PAS DE VALIDATION ICI !
+        // ================================
+        // On fait confiance à la session qui a déjà été validée
+        // lors de l'affichage du formulaire
+        
+        // Session valide - procéder à l'enregistrement de la commande
         $cart_items = $cart_for_this_user;
         $total_confirm = 0;
         foreach ($cart_items as $item) {
@@ -72,31 +89,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Génération d'un numéro de commande
         $order_number = strtoupper('CMD' . bin2hex(random_bytes(3)));
 
-        // Insertion de la commande
-        $stmt = $link->prepare("INSERT INTO orders (order_number, customer_name, payment_method, total_price, table_id, user_id) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssdis", $order_number, $client_name, $payment_method, $total_confirm, $table_id, $user_id);
+        // Insertion de la commande avec session_token
+        $stmt = $link->prepare("INSERT INTO orders (order_number, customer_name, payment_method, total_price, table_id, user_id, session_token) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssdiss", $order_number, $client_name, $payment_method, $total_confirm, $table_id, $user_id, $session_token);
         $stmt->execute();
         $order_id = $stmt->insert_id;
         $stmt->close();
 
         // Insertion des articles commandés
-        // 💡 Ajout de item_comment dans la requête SQL et dans les paramètres
         $stmt_item = $link->prepare("INSERT INTO order_items (order_id, food_name, quantity, price, item_comment) VALUES (?, ?, ?, ?, ?)");
         
         foreach ($cart_items as $item) {
             $name = htmlspecialchars($item['nm']);
             $qty = intval($item['qty_total']);
             $price = floatval($item['price']);
-            // 💡 Récupération et assainissement du commentaire.
             $comment = isset($item['comment']) ? htmlspecialchars(trim($item['comment'])) : ''; 
             
-            // 💡 Ajout du type 's' pour le commentaire dans bind_param
             $stmt_item->bind_param("isids", $order_id, $name, $qty, $price, $comment);
             $stmt_item->execute();
         }
         $stmt_item->close();
 
-        // 🔒 Vider le panier spécifique à l'utilisateur après la commande
+        // Incrémenter le compteur de commandes de la session
+        if ($session_token) {
+            try {
+                $sessionManager->incrementOrderCount($session_token);
+            } catch (Exception $e) {
+                // Erreur d'incrémentation mais on continue quand même
+                error_log("Failed to increment order count: " . $e->getMessage());
+            }
+        }
+
+        // Vider le panier spécifique à l'utilisateur après la commande
         unset($_SESSION["carts_by_table"][$table_id][$user_id]);
 
         // Affichage confirmation
@@ -109,12 +133,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                   <div class='auto-container' style='max-width:700px; margin:auto; background:#fff; padding:25px; box-shadow:0 0 15px rgba(0,0,0,0.1); border-radius:10px;'>
                       <h2 style='color:#a40301; margin-bottom:20px;'>Merci, votre commande est enregistrée</h2>
                       <p><strong>Numéro de commande :</strong> <span style='color:#333;'>$order_number</span></p>
+                      <p><strong>Table :</strong> <span style='color:#333;'>" . htmlspecialchars($table_name) . "</span></p>
                       <p><strong>Au nom de :</strong> <span style='color:#333;'>" . htmlspecialchars($client_name) . "</span></p>
                       <p><strong>Mode de paiement :</strong> <span style='color:#333;'>" . htmlspecialchars($payment_method) . "</span></p>
                       <hr style='margin:25px 0;'>
                       <h3>Détail de la commande :</h3>";
 
-        // Début de l'affichage adapté au mobile avec STYLISATION AMÉLIORÉE
+        // Début de l'affichage adapté au mobile avec STYLISATION
         echo "<div style='margin-bottom: 20px;'>";
         $total_confirm = 0;
         foreach ($cart_items as $item) {
@@ -125,7 +150,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $total_line = $qty * $price;
             $total_confirm += $total_line;
 
-            // Nouvelle carte stylisée pour chaque article
             echo "<div style='border: 1px solid #e0e0e0; padding: 15px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); background: #fafafa;'>
                       <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;'>
                           <span style='font-weight: 700; color: #a40301; font-size: 1.1rem;'>" . $name . "</span>
@@ -149,11 +173,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                   <span style='font-weight: 700; font-size: 1.3rem; color: #333;'>Montant Total : </span>
                   <span style='font-weight: 700; font-size: 1.3rem; color: #a40301;'>" . number_format($total_confirm, 2) . " €</span>
               </div>";
-        // Fin de l'affichage adapté au mobile
 
-        // Ajout des deux liens dans la même div
+        // Liens d'actions
         echo "<div style='text-align: center; margin-top: 35px;'>
-                  <p>Gardez ce numéro pour suivre votre commande à tout moment : <strong>" . htmlspecialchars($order_number) . "</strong></p>
+                  <p>Gardez ce numéro pour suivre votre commande : <strong>" . htmlspecialchars($order_number) . "</strong></p>
                   <p id='download-status' style='color: #28a745; font-weight: 600; margin-bottom: 10px;'>Téléchargement de votre facture en cours...</p>
                   <a href='facture.php?order_number=$order_number' style='display:block; background:#007bff; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700; margin-bottom:10px;'>
                       Télécharger à nouveau la facture (PDF)
@@ -162,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                       Suivre ma commande
                   </a>
                   <a href='index.php' style='display:block; background:#a40301; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700;'>
-                      Retour au menu
+                      Continuer à commander
                   </a>
               </div>
           </div>
@@ -171,13 +194,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Script pour télécharger automatiquement la facture
         echo "<script>
                 window.onload = function() {
-                    // Créer un iframe invisible pour le téléchargement
                     var iframe = document.createElement('iframe');
                     iframe.style.display = 'none';
                     iframe.src = 'facture.php?order_number=$order_number';
                     document.body.appendChild(iframe);
                     
-                    // Changer le message après 2 secondes
                     setTimeout(function() {
                         var statusElement = document.getElementById('download-status');
                         if (statusElement) {
@@ -202,6 +223,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <section class="checkout-section">
     <div class="auto-container" style="max-width: 700px; margin:auto; background:#fff; padding:25px; box-shadow:0 0 15px rgba(0,0,0,0.1); border-radius:10px;">
         <h2 style="color:#a40301; margin-bottom: 20px;">Détails de la commande</h2>
+        
+        <!-- Afficher la table -->
+        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
+            <strong><i class="fas fa-table"></i> Table :</strong> <?= htmlspecialchars($table_name) ?>
+        </div>
 
         <?php if ($error): ?>
             <div style="background: #f8d7da; color: #842029; padding: 12px 20px; margin-bottom: 20px; border-radius: 6px;">
@@ -243,7 +269,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $comment = htmlspecialchars($item['comment'] ?? ''); 
             ?>
                 <li style="padding: 8px 0; border-bottom:1px solid #ddd;">
-                    <?= htmlspecialchars($item['nm']) ?> – Quantité : <?= intval($item['qty_total']) ?> – Prix unitaire : <?= number_format(floatval($item['price']), 2) ?> €
+                    <?= htmlspecialchars($item['nm']) ?> — Quantité : <?= intval($item['qty_total']) ?> — Prix unitaire : <?= number_format(floatval($item['price']), 2) ?> €
                     <?php if (!empty($comment)): ?>
                         <span style="display: block; font-size: 0.9rem; color: #a40301; margin-top: 3px;">
                              Instructions : <?= $comment ?>
@@ -254,7 +280,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </ul>
 
         <p style="text-align:right; font-weight:700; font-size:1.2rem; margin-top: 15px;">
-            Total : <span style="color:#a40301;"><?= $cart_total ?> €</span>
+            Total : <span style="color:#a40301;"><?= $cart_total_formatted ?> €</span>
         </p>
     </div>
 </section>

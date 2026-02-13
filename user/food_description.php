@@ -1,16 +1,18 @@
 <?php
 session_start();
 
-// Gérer l'ID de la table
-if (isset($_GET['table_id'])) {
-    $_SESSION['table_id'] = intval($_GET['table_id']);
-}
-$table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
+// ================================
+// SÉCURITÉ : Validation de session
+// ================================
+require_once "session_validator.php";
 
-// 🔒 Gérer l'ID de l'utilisateur
+// Gérer l'ID de l'utilisateur
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
+
+$table_id = $_SESSION['table_id'];
+$table_name = $_SESSION['table_name'];
 $user_id = $_SESSION['user_id'];
 
 include "header.php";
@@ -142,7 +144,7 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- End Shop Single Section -->
 
 <div style="margin-top: 30px; text-align: center;">
-    <a href="view_carte.php?table_id=<?= $table_id ?>" 
+    <a href="view_carte.php" 
        style="
          display: inline-block;
          background-color: #a41a13;
@@ -184,14 +186,14 @@ if ($row = mysqli_fetch_array($res)) {
                         </figure>
                         <div class="lower-content">
                             <h4>
-                                <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>">
+                                <a href="food_description.php?id=<?php echo $row["id"]; ?>">
                                     <?php echo $row["food_name"]; ?>
                                 </a>
                             </h4>
                             <div class="text"><?php echo substr($row["food_description"], 0, 30); ?>...</div>
                             <div class="price"><?php echo $row["food_original_price"]; ?> € </div>
                             <div class="lower-box">
-                                <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>" class="theme-btn btn-style-five">
+                                <a href="food_description.php?id=<?php echo $row["id"]; ?>" class="theme-btn btn-style-five">
                                     <span class="txt">Food description</span>
                                 </a>
                             </div>
@@ -210,7 +212,6 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- JavaScript -->
 <script type="text/javascript">
     function add_to_cart(id, qty) {
-        var table_id = <?php echo $table_id; ?>;
         var comment = document.getElementById('order-comment').value.trim();
         
         var xhr = new XMLHttpRequest();
@@ -256,7 +257,6 @@ if ($row = mysqli_fetch_array($res)) {
         };
         xhr.send("id=" + encodeURIComponent(id) + 
                  "&qty=" + encodeURIComponent(qty) + 
-                 "&table_id=" + encodeURIComponent(table_id) + 
                  "&comment=" + encodeURIComponent(comment));
     }
 </script>

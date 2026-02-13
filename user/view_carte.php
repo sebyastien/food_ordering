@@ -1,17 +1,18 @@
 <?php
 session_start();
 
-// Gérer l'ID de la table
-if (isset($_GET['table_id'])) {
-    $_SESSION['table_id'] = intval($_GET['table_id']);
-}
-// 🛠️ CORRECTION PHP : Utilisation de l'opérateur de coalescence nulle (??) pour éviter l'erreur "Undefined array key"
-$table_id = intval($_SESSION['table_id'] ?? 0);
+// ================================
+// SÉCURITÉ : Validation de session
+// ================================
+require_once "session_validator.php";
 
-// 🔒 Gérer l'ID de l'utilisateur
+// Gérer l'ID de l'utilisateur
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
+
+$table_id = $_SESSION['table_id'];
+$table_name = $_SESSION['table_name'];
 $user_id = $_SESSION['user_id'];
 
 include "header.php";
