@@ -128,7 +128,8 @@ CREATE TABLE IF NOT EXISTS `admin_activity_log` (
   KEY `idx_user` (`admin_user`),
   KEY `idx_action` (`action`),
   KEY `idx_created` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 -- --------------------------------------------------------
 
@@ -176,7 +177,8 @@ CREATE TABLE IF NOT EXISTS `daily_stats` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `stat_date` (`stat_date`),
   KEY `idx_date` (`stat_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `daily_stats`
@@ -214,7 +216,8 @@ CREATE TABLE IF NOT EXISTS `dynamic_qr_codes` (
   KEY `idx_table` (`table_id`),
   KEY `idx_status` (`status`),
   KEY `idx_expires` (`expires_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 -- --------------------------------------------------------
 
@@ -324,7 +327,8 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   KEY `idx_created` (`created_at`),
   KEY `idx_type` (`type`),
   KEY `idx_priority` (`priority`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `notifications`
@@ -379,7 +383,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `order_type` varchar(50) NOT NULL DEFAULT 'table',
   PRIMARY KEY (`id`),
   KEY `idx_session_token` (`session_token`)
-) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `orders`
@@ -654,7 +659,8 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `item_comment` text,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=325 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=325 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `order_items`
@@ -1001,7 +1007,8 @@ CREATE TABLE IF NOT EXISTS `pos_config` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `config_key` (`config_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `pos_config`
@@ -1029,7 +1036,8 @@ CREATE TABLE IF NOT EXISTS `pos_export_log` (
   PRIMARY KEY (`id`),
   KEY `idx_order` (`order_id`),
   KEY `idx_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 -- --------------------------------------------------------
 
@@ -1051,7 +1059,8 @@ CREATE TABLE IF NOT EXISTS `pos_sync_queue` (
   KEY `idx_status` (`status`),
   KEY `idx_order` (`order_number`),
   KEY `idx_created` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `pos_sync_queue`
@@ -1100,7 +1109,8 @@ CREATE TABLE IF NOT EXISTS `restaurant_tables` (
   UNIQUE KEY `qr_code_identifier` (`qr_code_identifier`),
   UNIQUE KEY `idx_qr_identifier` (`qr_identifier`),
   KEY `idx_qr` (`qr_code_identifier`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `restaurant_tables`
@@ -1141,7 +1151,8 @@ CREATE TABLE IF NOT EXISTS `table_sessions` (
   KEY `idx_token` (`session_token`),
   KEY `idx_status` (`status`),
   KEY `idx_expires` (`expires_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=510 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=510 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 --
 -- Déchargement des données de la table `table_sessions`
@@ -1694,7 +1705,8 @@ CREATE TABLE IF NOT EXISTS `user_preferences` (
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user_pref` (`user_id`,`preference_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+;
 
 -- --------------------------------------------------------
 
