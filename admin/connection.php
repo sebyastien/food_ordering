@@ -1,5 +1,8 @@
 <?php
-$link = mysqli_connect("localhost","fooduser","foodpass123","food_order");
-if(!$link){ die(mysqli_connect_error()); }
+$link = mysqli_connect("localhost","fooduser","password123","food_order");
+
+if (!$link) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 ?>
 
