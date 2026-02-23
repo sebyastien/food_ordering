@@ -1,6 +1,10 @@
 <?php
 // Vérification d'accès
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 include "connection.php"; // connexion MySQL
 

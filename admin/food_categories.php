@@ -1,6 +1,7 @@
 <?php
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];
 include "auth_check.php";
 
@@ -53,6 +54,11 @@ if (isset($_POST["submit1"])) {
     }
 }
 
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+include "auth_check.php";
+
+>>>>>>> 4470edb (maj)
 include "header.php";
 ?>
 
@@ -81,21 +87,31 @@ include "header.php";
                                     <label class="control-label mb-1">Category Name</label>
                                     <input id="food_category" name="food_category" type="text" class="form-control" placeholder="Enter Category" required>
                                 </div>
+<<<<<<< HEAD
                                 <div class="form-group">
                                     <label class="control-label mb-1">Order (Position d'affichage)</label>
                                     <input id="ordre" name="ordre" type="number" class="form-control" placeholder="Ex: 1, 2, 3..." value="0">
                                     <small class="form-text text-muted">Plus le numéro est petit, plus la catégorie apparaîtra en premier</small>
                                 </div>
+=======
+>>>>>>> 4470edb (maj)
                                 <div>
                                     <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block" name="submit1">
                                         <span id="payment-button-amount">Submit</span>
                                     </button>
                                 </div>
                                 <br>
+<<<<<<< HEAD
                                 <div class="alert alert-success" role="alert" id="success" style="<?= isset($success_message) ? 'display: block' : 'display: none' ?>">
                                     Category added successfully
                                 </div>
                                 <div class="alert alert-danger" role="alert" id="error" style="<?= isset($error_message) ? 'display: block' : 'display: none' ?>">
+=======
+                                <div class="alert alert-success" role="alert" id="success" style="display: none">
+                                    Category added successfully
+                                </div>
+                                <div class="alert alert-danger" role="alert" id="error" style="display: none">
+>>>>>>> 4470edb (maj)
                                     Duplicate category found
                                 </div>
                             </form>
@@ -107,7 +123,11 @@ include "header.php";
             <!-- Table of categories -->
             <div class="card">
                 <div class="card-header">
+<<<<<<< HEAD
                     <strong class="card-title">Categories (triées par ordre)</strong>
+=======
+                    <strong class="card-title">Categories</strong>
+>>>>>>> 4470edb (maj)
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered">
@@ -115,8 +135,11 @@ include "header.php";
                             <tr>
                                 <th>#</th>
                                 <th>Category</th>
+<<<<<<< HEAD
                                 <th>Order</th>
                                 <th>↑↓</th>
+=======
+>>>>>>> 4470edb (maj)
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -124,17 +147,24 @@ include "header.php";
                         <tbody>
                             <?php
                             $count = 0;
+<<<<<<< HEAD
                             $res = mysqli_query($link, "SELECT * FROM food_categories ORDER BY ordre ASC, id ASC");
+=======
+                            $res = mysqli_query($link, "SELECT * FROM food_categories");
+>>>>>>> 4470edb (maj)
                             while ($row = mysqli_fetch_array($res)) {
                                 $count++;
                                 echo "<tr>";
                                 echo "<td>$count</td>";
                                 echo "<td>{$row['food_categories']}</td>";
+<<<<<<< HEAD
                                 echo "<td><span class='badge badge-primary'>{$row['ordre']}</span></td>";
                                 echo "<td>";
                                 echo "<a href='?action=move_up&id={$row['id']}' style='color:blue; margin-right:10px; text-decoration:none; font-size:18px;' title='Monter'>▲</a>";
                                 echo "<a href='?action=move_down&id={$row['id']}' style='color:blue; text-decoration:none; font-size:18px;' title='Descendre'>▼</a>";
                                 echo "</td>";
+=======
+>>>>>>> 4470edb (maj)
                                 echo "<td><a href='edit_categories.php?id={$row['id']}' style='color:green'>Edit</a></td>";
                                 echo "<td><a href='delete_categories.php?id={$row['id']}' style='color:red' onclick=\"return confirm('Confirm delete?');\">Delete</a></td>";
                                 echo "</tr>";
@@ -150,5 +180,21 @@ include "header.php";
 </div>
 
 <?php
+<<<<<<< HEAD
 include "footer.php";
 ?>
+=======
+if (isset($_POST["submit1"])) {
+    $category = mysqli_real_escape_string($link, $_POST["food_category"]);
+    $res = mysqli_query($link, "SELECT * FROM food_categories WHERE food_categories='$category'");
+    if (mysqli_num_rows($res) > 0) {
+        echo "<script>document.getElementById('error').style.display = 'block';</script>";
+    } else {
+        mysqli_query($link, "INSERT INTO food_categories(food_categories) VALUES('$category')");
+        echo "<script>document.getElementById('success').style.display = 'block';</script>";
+        echo "<script>setTimeout(() => window.location = 'food_categories.php', 1000);</script>";
+    }
+}
+include "footer.php";
+?>
+>>>>>>> 4470edb (maj)

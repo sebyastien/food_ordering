@@ -1,7 +1,11 @@
 <?php
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 // Vérifiez si l'ID a été passé dans l'URL

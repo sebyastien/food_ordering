@@ -37,6 +37,7 @@
 
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
+<<<<<<< HEAD
                     <li class="active">
                         <a href="acceuil.php"> <i class="menu-icon fa fa-dashboard"></i>Acceuil </a>
                     </li>
@@ -44,10 +45,17 @@
                     $role_ok = ($_SESSION['admin_role'] !== 'patron' && $_SESSION['admin_role'] !== 'gérant' && $_SESSION['admin_role'] !== 'serveur');
                     if ($role_ok):  
                     ?>
+=======
+                        <li class="active">
+                        <a href="acceuil.php"> <i class="menu-icon fa fa-dashboard"></i>Acceuil </a>
+                    </li>
+                    <?php if ($_SESSION['admin_role'] !== 'patron'): ?>
+>>>>>>> 4470edb (maj)
                     <li class="active">
                         <a href="dashboard.php"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                     </li>
                     <?php endif; ?>
+<<<<<<< HEAD
                     <?php 
                     $role_ok = ($_SESSION['admin_role'] !== 'serveur');
                     if ($role_ok):  
@@ -60,6 +68,13 @@
                     $role_ok = ($_SESSION['admin_role'] !== 'serveur');
                     if ($role_ok):  
                     ?>
+=======
+
+                    <li>
+                        <a href="food_categories.php"> <i class="menu-icon fa fa-dashboard"></i>Add / Edit Categories </a>
+                    </li>
+                    
+>>>>>>> 4470edb (maj)
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Food</a>
                         <ul class="sub-menu children dropdown-menu">
@@ -67,6 +82,7 @@
                             <li><i class="menu-icon fa fa-th"></i><a href="display_food.php">Display Food </a></li>
                         </ul>
                     </li>
+<<<<<<< HEAD
                     <?php endif; ?>
                     <?php 
                     $role_ok = ($_SESSION['admin_role'] !== 'serveur');
@@ -76,6 +92,11 @@
                         <a href="orders.php"> <i class="menu-icon fa fa-dashboard"></i>All the Orders</a>
                     </li>
                     <?php endif; ?>
+=======
+                    <li class="active">
+                        <a href="orders.php"> <i class="menu-icon fa fa-dashboard"></i>All the Orders</a>
+                    </li>
+>>>>>>> 4470edb (maj)
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-th"></i>Vue Cuisine</a>
                         <ul class="sub-menu children dropdown-menu">
@@ -83,10 +104,14 @@
                             <li><i class="menu-icon fa fa-th"></i><a href="archived_orders.php">Archives commandes</a></li>
                         </ul>
                     </li>
+<<<<<<< HEAD
                     <?php 
                     $role_ok = ($_SESSION['admin_role'] !== 'patron'  && $_SESSION['admin_role'] !== 'serveur');
                     if ($role_ok):  
                     ?>
+=======
+                    <?php if ($_SESSION['admin_role'] !== 'patron'): ?>
+>>>>>>> 4470edb (maj)
                     <li class="active">
                         <a href="add_user.php"> <i class="menu-icon fa fa-dashboard"></i>Add User</a>
                     </li>
@@ -97,6 +122,7 @@
                         <a href="qr_generator_page.php"> <i class="menu-icon fa fa-dashboard"></i>Génération de Qr Code</a>
                     </li>
                     <?php endif; ?>
+<<<<<<< HEAD
                     <li class="active">
                         <a href="server_orders.php"> <i class="menu-icon fa fa-dashboard"></i>Serveur</a>
                     </li>
@@ -104,6 +130,8 @@
                     <li class="active">
                         <a href="manage_tables.php"> <i class="menu-icon fa fa-table"></i>Gestion des Tables</a>
                     </li>
+=======
+>>>>>>> 4470edb (maj)
                 </ul>
             </div></nav>
     </aside><div id="right-panel" class="right-panel">

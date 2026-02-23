@@ -2,7 +2,11 @@
 <?php
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];  // adapter selon la page
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 include "header.php";

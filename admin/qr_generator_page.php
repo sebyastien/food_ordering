@@ -2,6 +2,7 @@
 // qr_generator_page.php
 
 session_start();
+<<<<<<< HEAD
 
 // --- LOGIQUE DE GÉNÉRATION CÔTÉ SERVEUR ---
 // Ce bloc s'exécute lorsque l'IMG tag fait un appel secondaire au serveur.
@@ -56,12 +57,21 @@ if (isset($_GET['action']) && $_GET['action'] === 'generate' && isset($_GET['dat
 include "header.php";
 
 $base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
+=======
+include "header.php";
+
+$base_url = 'http://localhost/food_ordering_system/user'; // À REMPLACER PAR VOTRE URL
+>>>>>>> 4470edb (maj)
 
 ?>
 
 <style>
     :root {
+<<<<<<< HEAD
         --primary-color: #a41a13;
+=======
+        --primary-color: #a41a13; /* Rouge principal */
+>>>>>>> 4470edb (maj)
         --dark-color: #333;
         --light-color: #f7f7f7;
         --text-color: #555;
@@ -185,6 +195,7 @@ $base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
         color: #888;
         word-wrap: break-word;
     }
+<<<<<<< HEAD
     
     .error-message {
         color: #dc3545;
@@ -215,6 +226,8 @@ $base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
     .download-btn:hover {
         background-color: #218838;
     }
+=======
+>>>>>>> 4470edb (maj)
 </style>
 
 <div class="container">
@@ -242,7 +255,12 @@ $base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
         </div>
     </div>
     
+<<<<<<< HEAD
     <div id="qr-display-area" class="qr-display-area"></div>
+=======
+    <div id="qr-display-area" class="qr-display-area">
+        </div>
+>>>>>>> 4470edb (maj)
 </div>
 
 <script>
@@ -264,6 +282,7 @@ $base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
             url = baseUrl + '/takeaway.php';
         }
         
+<<<<<<< HEAD
         // Afficher un message de chargement
         qrDisplayArea.innerHTML = '<p class="loading">⏳ Génération du QR Code en cours...</p>';
         
@@ -310,6 +329,19 @@ $base_url = 'http://localhost/food_ordering/user'; // À REMPLACER PAR VOTRE URL
         
         // Déclencher le chargement de l'image de test
         testImg.src = qrImageUrl;
+=======
+        // Utilisation de l'API Google Charts pour la génération (simple, mais déprécié)
+        const qrUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=' + encodeURIComponent(url);
+        
+        qrDisplayArea.innerHTML = `
+            <h3>QR Code généré :</h3>
+            <div class="qr-image">
+                <img src="${qrUrl}" alt="QR Code" />
+            </div>
+            <p class="qr-url">URL : <strong>${url}</strong></p>
+            <p style="margin-top: 15px;"><small>Faites un clic droit sur l'image pour la sauvegarder ou l'imprimer.</small></p>
+        `;
+>>>>>>> 4470edb (maj)
     }
 </script>
 

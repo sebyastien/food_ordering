@@ -170,6 +170,7 @@
 }
 
 @media only screen and (max-width: 1023px) {
+<<<<<<< HEAD
   /* ************************************************************ */
   /* --- CORRECTION STICKY HEADER POUR MOBILE --- */
   /* --- Le rend visible sur mobile/tablette (avant il était 'display: none;') --- */
@@ -186,11 +187,17 @@
   }
 
   /* La règle originale est modifiée pour ne cacher que les autres éléments, le sticky-header ayant été traité ci-dessus. */
+=======
+  .fixed-header .sticky-header,
+>>>>>>> 4470edb (maj)
   .menu-section-one .inner-container::before,
   .main-header .outer-box .btn-box {
     display: none;
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4470edb (maj)
   .header-style-two .header-upper .logo-outer {
     margin-top: 0px;
   }
@@ -355,7 +362,11 @@
 
   .header-style-two {
     position: relative;
+<<<<<<< HEAD
     background-color: red;
+=======
+    background-color: #222222;
+>>>>>>> 4470edb (maj)
   }
 
   .header-style-two .header-upper {
@@ -419,6 +430,7 @@
 }
 
 @media only screen and (max-width: 991px) {
+<<<<<<< HEAD
   
   /* ************************************************************ */
   /* --- CORRECTION LOGO ET HAMBURGER (ÉGALITÉ DE TAILLE/LIGNE) --- */
@@ -476,6 +488,12 @@
   /* --- FIN CORRECTION (991px) --- */
   /* ************************************************************ */
   
+=======
+  .main-header .header-upper .logo-outer {
+    margin-bottom: 0px;
+    float: none;
+  }
+>>>>>>> 4470edb (maj)
   .about-section-two .images-column {
     margin-bottom: 0px;
   }
@@ -485,6 +503,18 @@
   .header-style-two .header-upper .logo-outer {
     margin-top: 0px;
   }
+<<<<<<< HEAD
+=======
+  .main-header .header-upper .nav-outer {
+    position: relative;
+    z-index: 35;
+    margin-top: -60px;
+  }
+  .navbar-toggler {
+    position: relative;
+    top: -10px;
+  }
+>>>>>>> 4470edb (maj)
   .main-footer .footer-widget {
     position: relative;
     margin-bottom: 50px;
@@ -504,8 +534,12 @@
     top: 2px;
   }
   .main-header.header-style-two .header-upper .nav-outer {
+<<<<<<< HEAD
     /* CORRECTION : Remplacer margin-top: -70px; par 0px */
     margin-top: 0px !important;
+=======
+    margin-top: -70px;
+>>>>>>> 4470edb (maj)
   }
 }
 
@@ -527,8 +561,12 @@
     padding: 10px 0px;
   }
   .main-header .header-upper .nav-outer {
+<<<<<<< HEAD
     /* CORRECTION : Remplacer margin-top: -30px; */
     margin-top: 0px !important; /* CORRIGÉ: Assure que le nav-outer ne remonte pas */
+=======
+    margin-top: -30px;
+>>>>>>> 4470edb (maj)
     width: 100%;
   }
   .main-header.header-style-two .navbar-toggler {
@@ -873,7 +911,11 @@
   }
 
   .header-style-two .header-upper .nav-outer {
+<<<<<<< HEAD
     margin-top: 0px !important; /* CORRIGÉ: Était -70px. Assure que le nav-outer ne remonte pas. */
+=======
+    margin-top: -70px;
+>>>>>>> 4470edb (maj)
   }
 
   .banner-section-two {
@@ -1373,4 +1415,8 @@
   .cart-section .cart-options {
     padding: 20px 20px;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 4470edb (maj)

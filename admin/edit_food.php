@@ -2,7 +2,11 @@
 session_start();
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 include "header.php";
@@ -11,6 +15,11 @@ $food_name = "";
 $food_category = "";
 $food_description = "";
 $food_original_price = "";
+<<<<<<< HEAD
+=======
+$food_discount_price = "";
+$food_avaibility = "";
+>>>>>>> 4470edb (maj)
 $food_veg_nonveg = "";
 $food_ingredients = "";
 $food_image = "";
@@ -21,6 +30,11 @@ while ($row = mysqli_fetch_array($res)) {
     $food_category = $row["food_category"];
     $food_description = $row["food_description"];
     $food_original_price = $row["food_original_price"];
+<<<<<<< HEAD
+=======
+    $food_discount_price = $row["food_discount_price"];
+    $food_avaibility = $row["food_avaibility"];
+>>>>>>> 4470edb (maj)
     $food_veg_nonveg = $row["food_veg_nonveg"];
     $food_ingredients = $row["food_ingredients"];
     $food_image = $row["food_image"];
@@ -52,6 +66,7 @@ while ($row = mysqli_fetch_array($res)) {
                     <div id="pay-invoice">
                         <div class="card-body">
                             <div class="alert alert-success" role="alert" id="success" style="display: none">
+<<<<<<< HEAD
                                 Food updated successfully
                             </div>
                             <div class="alert alert-danger" role="alert" id="error" style="display: none">
@@ -61,6 +76,16 @@ while ($row = mysqli_fetch_array($res)) {
                                 <div class="form-group">
                                     <label>Image</label><br>
                                     <div id="uploaded_image" style="cursor:pointer;"
+=======
+                                Food added successfully
+                            </div>
+                            <div class="alert alert-danger" role="alert" id="error" style="display: none">
+                                Duplicate Food found
+                            </div>
+                            <form name="form1" action="" method="post">
+                                <div class="form-group">
+                                    <div id="uploaded_image" style="..."
+>>>>>>> 4470edb (maj)
                                          onclick="document.getElementById('upload_image').click();">
                                         <img src="<?php if ($food_image != "") {
                                             echo $food_image;
@@ -89,11 +114,16 @@ while ($row = mysqli_fetch_array($res)) {
                                     </select>
                                 </div>
                                 <div class="form-group">
+<<<<<<< HEAD
                                     <label for="cc-payment" class="control-label mb-1">Food Description</label>
+=======
+                                    <label for="cc-payment" class="control-label mb-1">Food Descriptions</label>
+>>>>>>> 4470edb (maj)
                                     <textarea name="food_description"
                                               class="form-control"><?php echo $food_description; ?></textarea>
                                 </div>
                                 <div class="form-group">
+<<<<<<< HEAD
                                     <label for="cc-payment" class="control-label mb-1">Price</label>
                                     <input id="food_original_price" name="food_original_price" type="text"
                                            class="form-control" placeholder="Enter Food Price" required
@@ -101,6 +131,34 @@ while ($row = mysqli_fetch_array($res)) {
                                 </div>
                                 <div class="form-group">
                                     <label for="cc-payment" class="control-label mb-1">Veg / NonVeg</label>
+=======
+                                    <label for="cc-payment" class="control-label mb-1">Food Original Price</label>
+                                    <input id="food_original_price" name="food_original_price" type="text"
+                                           class="form-control" placeholder="Enter Food Original Price" required
+                                           value="<?php echo $food_original_price; ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Food Discount Price</label>
+                                    <input id="food_discount_price" name="food_discount_price" type="text"
+                                           class="form-control" placeholder="Enter Food Discount Price" required
+                                           value="<?php echo $food_discount_price; ?>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Food Availibility</label>
+                                    <select name="food_avaibility" class="form-control">
+                                        <option <?php if ($food_avaibility == "Yes") {
+                                            echo "selected";
+                                        } ?>>Yes
+                                        </option>
+                                        <option <?php if ($food_avaibility == "No") {
+                                            echo "selected";
+                                        } ?>>No
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cc-payment" class="control-label mb-1">Food Veg / NonVeg</label>
+>>>>>>> 4470edb (maj)
                                     <select name="food_veg_nonveg" class="form-control">
                                         <option <?php if ($food_veg_nonveg == "Veg") {
                                             echo "selected";
@@ -129,12 +187,21 @@ while ($row = mysqli_fetch_array($res)) {
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 4470edb (maj)
         </div>
     </div>
 </div>
 
 <?php
 if (isset($_POST["submit1"])) {
+<<<<<<< HEAD
+=======
+    // Récupérer la valeur du champ de texte
+>>>>>>> 4470edb (maj)
     $ingredients = mysqli_real_escape_string($link, $_POST["ingredients"]);
 
     // Mise à jour des données dans la base
@@ -143,6 +210,11 @@ if (isset($_POST["submit1"])) {
         food_category='" . mysqli_real_escape_string($link, $_POST['food_category']) . "',
         food_description='" . mysqli_real_escape_string($link, $_POST['food_description']) . "',
         food_original_price='" . mysqli_real_escape_string($link, $_POST['food_original_price']) . "',
+<<<<<<< HEAD
+=======
+        food_discount_price='" . mysqli_real_escape_string($link, $_POST['food_discount_price']) . "',
+        food_avaibility='" . mysqli_real_escape_string($link, $_POST['food_avaibility']) . "',
+>>>>>>> 4470edb (maj)
         food_veg_nonveg='" . mysqli_real_escape_string($link, $_POST['food_veg_nonveg']) . "',
         food_ingredients='" . $ingredients . "'
         WHERE id='" . intval($_GET['id']) . "'") or die(mysqli_error($link));
@@ -160,7 +232,11 @@ if (isset($_POST["submit1"])) {
         document.getElementById("success").style.display = "block";
         setTimeout(function () {
             window.location.href = "display_food.php";
+<<<<<<< HEAD
         }, 1000);
+=======
+        }, 1000); // redirection après 1 seconde
+>>>>>>> 4470edb (maj)
     </script>
     <?php
 }
@@ -177,7 +253,13 @@ if (isset($_POST["submit1"])) {
                 <div class="row">
                     <div class="col-md-8 text-center">
                         <div id="image_demo" style="width:350px;"></div>
+<<<<<<< HEAD
                     </div>
+=======
+
+                    </div>
+
+>>>>>>> 4470edb (maj)
                     <div class="col-md-12">
                         <button class="btn btn-success crop_image">Crop & Upload Image</button>
                     </div>
@@ -190,6 +272,10 @@ if (isset($_POST["submit1"])) {
     </div>
 </div>
 <script>
+<<<<<<< HEAD
+=======
+    //https://foliotek.github.io/Croppie/
+>>>>>>> 4470edb (maj)
     $(document).ready(function () {
         $image_crop = $('#image_demo').croppie({
             enforceBoundary: false,
@@ -206,6 +292,10 @@ if (isset($_POST["submit1"])) {
         });
 
         $('#upload_image').on('change', function () {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4470edb (maj)
             var reader = new FileReader();
             reader.onload = function (event) {
                 $image_crop.croppie('bind', {
@@ -234,6 +324,10 @@ if (isset($_POST["submit1"])) {
                 });
             })
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4470edb (maj)
     });
 </script>
 <script src="cropping_js/bootstrap.min.js"></script>

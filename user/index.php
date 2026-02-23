@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+<<<<<<< HEAD
 // ================================
 // CONNEXION À LA BASE DE DONNÉES
 // ================================
@@ -22,10 +23,17 @@ require_once "session_validator.php";
 $_SESSION['order_type'] = 'table';
 
 // Gérer l'ID de l'utilisateur
+=======
+// Définir le type de commande comme 'table'
+$_SESSION['order_type'] = 'table';
+
+// 🔑 Gérer l'ID de l'utilisateur. On génère un ID unique s'il n'existe pas déjà en session.
+>>>>>>> 4470edb (maj)
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
 
+<<<<<<< HEAD
 // Récupérer les informations de la table depuis la session validée
 $table_id = $_SESSION['table_id'];
 $table_name = $_SESSION['table_name'];
@@ -310,18 +318,40 @@ include "slider.php";
     <i class="fas fa-check-circle"></i>
     Session active
 </div>
+=======
+// Gérer l'ID de la table
+if (isset($_GET['table_id'])) {
+    $_SESSION['table_id'] = intval($_GET['table_id']);
+}
+$table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
+
+// Le reste du code de la page...
+// ...
+
+include "header.php";
+include "slider.php";
+include "../admin/connection.php";
+?>
+
+<title>Home Page</title>
+>>>>>>> 4470edb (maj)
 
 <section class="products-section">
     <div class="auto-container">
 
         <div class="sec-title centered">
+<<<<<<< HEAD
             <h2>Notre Menu</h2>
+=======
+            <h2>Our Products</h2>
+>>>>>>> 4470edb (maj)
         </div>
 
         <div class="mixitup-gallery">
 
             <div class="filters clearfix">
                 <ul class="filter-tabs filter-btns clearfix">
+<<<<<<< HEAD
                     <li class="active filter" data-role="button" data-filter="all">Tout</li>
                     <?php
                     $res = mysqli_query($link, "SELECT * FROM food_categories ORDER BY ordre ASC, id ASC");
@@ -331,6 +361,17 @@ include "slider.php";
                         ?>
                         <li class="filter" data-role="button" data-filter=".<?= $category_class ?>">
                             <?= $category_name ?>
+=======
+                    <li class="active filter" data-role="button" data-filter="all">All</li>
+                    <?php
+                    $res = mysqli_query($link, "SELECT * FROM food_categories");
+                    while ($row = mysqli_fetch_assoc($res)) {
+                        // sécuriser le nom de catégorie dans le filtre CSS
+                        $category_class = htmlspecialchars($row["food_categories"]);
+                        ?>
+                        <li class="filter" data-role="button" data-filter=".<?= $category_class ?>">
+                            <?= $category_class ?>
+>>>>>>> 4470edb (maj)
                         </li>
                         <?php
                     }
@@ -343,11 +384,18 @@ include "slider.php";
                 <?php
                 $res = mysqli_query($link, "SELECT * FROM food WHERE is_active = 1");
                 while ($row = mysqli_fetch_assoc($res)) {
+<<<<<<< HEAD
                     $category_name = htmlspecialchars($row["food_category"]);
                     $category = str_replace(' ', '-', $category_name);
                     $food_name = htmlspecialchars($row["food_name"]);
                     $food_desc = htmlspecialchars(substr($row["food_description"], 0, 30)) . "..";
                     $food_price = htmlspecialchars($row["food_original_price"]);
+=======
+                    $category = htmlspecialchars($row["food_category"]);
+                    $food_name = htmlspecialchars($row["food_name"]);
+                    $food_desc = htmlspecialchars(substr($row["food_description"], 0, 30)) . "..";
+                    $food_price = htmlspecialchars($row["food_discount_price"]);
+>>>>>>> 4470edb (maj)
                     $food_image = htmlspecialchars($row["food_image"]);
                     $food_id = intval($row["id"]);
                     ?>
@@ -358,21 +406,38 @@ include "slider.php";
                             </figure>
                             <div class="lower-content">
                                 <h4>
+<<<<<<< HEAD
                                     <a href="food_description.php?id=<?= $food_id ?>">
+=======
+                                    <a href="food_description.php?id=<?= $food_id ?>&table_id=<?= $table_id ?>">
+>>>>>>> 4470edb (maj)
                                         <?= $food_name ?>
                                     </a>
                                 </h4>
                                 <div class="text"><?= $food_desc ?></div>
+<<<<<<< HEAD
                                 <div class="price"><?= $food_price ?>€</div>
                                 <div class="custom-button-container">
                                     <a href="food_description.php?id=<?= $food_id ?>"
                                        class="custom-btn custom-btn-description">
                                         <span class="txt">Voir détails</span>
+=======
+                                <div class="price"><?= $food_price ?></div>
+                                <!-- Remplacement des styles inline par des classes CSS -->
+                                <div class="custom-button-container">
+                                    <a href="food_description.php?id=<?= $food_id ?>&table_id=<?= $table_id ?>"
+                                       class="custom-btn custom-btn-description">
+                                        <span class="txt">Food Description</span>
+>>>>>>> 4470edb (maj)
                                     </a>
 
                                     <button class="custom-btn custom-btn-order add-to-cart-btn"
                                             data-id="<?= $food_id ?>">
+<<<<<<< HEAD
                                         <span class="txt">Commander</span>
+=======
+                                        <span class="txt">Order Now</span>
+>>>>>>> 4470edb (maj)
                                     </button>
                                 </div>
                             </div>
@@ -389,8 +454,13 @@ include "slider.php";
     </div>
 </section>
 
+<<<<<<< HEAD
 <div class="cart-button-container">
     <a href="view_carte.php"
+=======
+<div style="margin-top: 30px; text-align: center;">
+    <a href="view_carte.php?table_id=<?= $table_id ?>"
+>>>>>>> 4470edb (maj)
        style="
            display: inline-block;
            background-color: #a41a13;
@@ -405,10 +475,17 @@ include "slider.php";
        onmouseover="this.style.backgroundColor='black';"
        onmouseout="this.style.backgroundColor='#a41a13';"
     >
+<<<<<<< HEAD
         🛒 Voir le panier
     </a>
     <p style="margin-top: 10px; font-size: 16px; color: #555;">
         Consultez vos articles sélectionnés
+=======
+        Voir le panier
+    </a>
+    <p style="margin-top: 10px; font-size: 16px; color: #555;">
+        Cliquez ici pour consulter votre panier actuel.
+>>>>>>> 4470edb (maj)
     </p>
 </div>
 
@@ -437,9 +514,12 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
             alertBox.style.background = data.success ? "#28a745" : "#dc3545";
             alertBox.style.opacity = "0";
             alertBox.style.transition = "opacity 0.5s ease";
+<<<<<<< HEAD
             alertBox.style.maxWidth = "90%";
             alertBox.style.textAlign = "center";
             alertBox.style.fontSize = "0.95em";
+=======
+>>>>>>> 4470edb (maj)
             alertBox.textContent = data.message;
             document.body.appendChild(alertBox);
 
@@ -447,7 +527,11 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
             setTimeout(() => {
                 alertBox.style.opacity = "0";
                 setTimeout(() => alertBox.remove(), 500);
+<<<<<<< HEAD
             }, 2000);
+=======
+            }, 1000);
+>>>>>>> 4470edb (maj)
         })
         .catch(() => {
             alert("Une erreur est survenue, veuillez réessayer.");

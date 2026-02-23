@@ -1,11 +1,16 @@
 <?php
 // La session doit déjà être démarrée dans auth_check.php (à vérifier !)
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];  // adapter selon besoin
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon besoin
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 include "connection.php";
 include "header.php";
 
+<<<<<<< HEAD
 // Récupérer les messages de session
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : null;
@@ -32,11 +37,22 @@ function getRoleIcon($role) {
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+=======
+// Requête pour récupérer tous les utilisateurs
+$query = "SELECT username, role FROM admin_login ORDER BY username ASC";
+$result = mysqli_query($link, $query);
+?>
+
+>>>>>>> 4470edb (maj)
 <div class="breadcrumbs">
     <div class="col-sm-4">
         <div class="page-header float-left">
             <div class="page-title">
+<<<<<<< HEAD
                 <h1><i class="fa fa-users"></i> Liste des utilisateurs</h1>
+=======
+                <h1>Liste des utilisateurs</h1>
+>>>>>>> 4470edb (maj)
             </div>
         </div>
     </div>
@@ -52,6 +68,7 @@ function getRoleIcon($role) {
 </div>
 
 <div class="content mt-3">
+<<<<<<< HEAD
     <?php if ($success_message): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?= $success_message ?>
@@ -78,11 +95,20 @@ function getRoleIcon($role) {
                     <th width="50%"><i class="fa fa-user"></i> Nom d'utilisateur</th>
                     <th width="30%"><i class="fa fa-id-badge"></i> Rôle</th>
                     <th width="15%" class="text-center"><i class="fa fa-cogs"></i> Actions</th>
+=======
+    <div class="container bg-white p-3 rounded shadow">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Nom d'utilisateur</th>
+                    <th>Rôle</th>
+>>>>>>> 4470edb (maj)
                 </tr>
             </thead>
             <tbody>
                 <?php
                 if ($result && mysqli_num_rows($result) > 0) {
+<<<<<<< HEAD
                     $count = 1;
                     while ($user = mysqli_fetch_assoc($result)) {
                         ?>
@@ -106,11 +132,22 @@ function getRoleIcon($role) {
                     }
                 } else {
                     echo "<tr><td colspan='4' class='text-center text-muted'>Aucun utilisateur trouvé.</td></tr>";
+=======
+                    while ($user = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($user['username']) . "</td>";
+                        echo "<td>" . htmlspecialchars($user['role']) . "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='2'>Aucun utilisateur trouvé.</td></tr>";
+>>>>>>> 4470edb (maj)
                 }
                 ?>
             </tbody>
         </table>
     </div>
+<<<<<<< HEAD
 
     <div class="container bg-white p-3 rounded shadow mt-3">
         <h5 class="mb-3"><i class="fa fa-info-circle"></i> Légende des rôles</h5>
@@ -283,6 +320,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+=======
+</div>
+
+>>>>>>> 4470edb (maj)
 <?php
 include "footer.php";
 ?>

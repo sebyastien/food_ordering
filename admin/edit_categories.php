@@ -1,20 +1,30 @@
 <?php
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 include "header.php";
 
 $id = intval($_GET["id"]);
 $category_name = "";
+<<<<<<< HEAD
 $ordre = 0;
+=======
+>>>>>>> 4470edb (maj)
 
 // Récupération de la catégorie existante
 $res = mysqli_query($link, "SELECT * FROM food_categories WHERE id=$id");
 if ($row = mysqli_fetch_array($res)) {
     $category_name = $row["food_categories"];
+<<<<<<< HEAD
     $ordre = $row["ordre"];
+=======
+>>>>>>> 4470edb (maj)
 }
 ?>
 
@@ -44,11 +54,14 @@ if ($row = mysqli_fetch_array($res)) {
                                     <label class="control-label mb-1">Category Name</label>
                                     <input id="food_category" name="food_category" type="text" class="form-control" placeholder="Enter Category" required value="<?php echo htmlspecialchars($category_name); ?>">
                                 </div>
+<<<<<<< HEAD
                                 <div class="form-group">
                                     <label class="control-label mb-1">Order (Position d'affichage)</label>
                                     <input id="ordre" name="ordre" type="number" class="form-control" placeholder="Ex: 1, 2, 3..." value="<?php echo $ordre; ?>">
                                     <small class="form-text text-muted">Plus le numéro est petit, plus la catégorie apparaîtra en premier</small>
                                 </div>
+=======
+>>>>>>> 4470edb (maj)
                                 <div>
                                     <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block" name="submit1">
                                         <span id="payment-button-amount">Update</span>
@@ -73,17 +86,29 @@ if ($row = mysqli_fetch_array($res)) {
 <?php
 if (isset($_POST["submit1"])) {
     $new_category = mysqli_real_escape_string($link, $_POST["food_category"]);
+<<<<<<< HEAD
     $ordre = intval($_POST["ordre"]);
+=======
+>>>>>>> 4470edb (maj)
     $id = intval($_POST["id"]);
 
     $res = mysqli_query($link, "SELECT * FROM food_categories WHERE food_categories='$new_category' AND id!=$id");
     if (mysqli_num_rows($res) > 0) {
         echo "<script>document.getElementById('error').style.display = 'block';</script>";
     } else {
+<<<<<<< HEAD
         mysqli_query($link, "UPDATE food_categories SET food_categories='$new_category', ordre=$ordre WHERE id=$id");
+=======
+        mysqli_query($link, "UPDATE food_categories SET food_categories='$new_category' WHERE id=$id");
+>>>>>>> 4470edb (maj)
         echo "<script>document.getElementById('success').style.display = 'block';</script>";
         echo "<script>setTimeout(() => window.location = 'food_categories.php', 1000);</script>";
     }
 }
 include "footer.php";
+<<<<<<< HEAD
 ?>
+=======
+?>
+
+>>>>>>> 4470edb (maj)

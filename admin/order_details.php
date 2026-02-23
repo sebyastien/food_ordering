@@ -2,7 +2,11 @@
 session_start();
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'patron', 'gérant'];  // adapter selon la page
+=======
+$roles_autorises = ['admin', 'patron', 'gerant'];  // adapter selon la page
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 include "header.php";
@@ -21,6 +25,7 @@ if (mysqli_num_rows($order_res) == 0) {
 }
 $order = mysqli_fetch_assoc($order_res);
 
+<<<<<<< HEAD
 // Ajout de item_comment dans la requête
 $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $order_id");
 ?>
@@ -39,6 +44,11 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
     }
 </style>
 
+=======
+$items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $order_id");
+?>
+
+>>>>>>> 4470edb (maj)
 <div class="breadcrumbs">
     <div class="col-sm-4">
         <div class="page-header float-left">
@@ -74,7 +84,10 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
                         <thead>
                             <tr>
                                 <th>Plat</th>
+<<<<<<< HEAD
                                 <th>Instructions spéciales</th>
+=======
+>>>>>>> 4470edb (maj)
                                 <th>Quantité</th>
                                 <th>Prix Unitaire (€)</th>
                                 <th>Sous-total (€)</th>
@@ -85,6 +98,7 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
                             if ($items_res && mysqli_num_rows($items_res) > 0) {
                                 while ($item = mysqli_fetch_assoc($items_res)) {
                                     $subtotal = $item['quantity'] * $item['price'];
+<<<<<<< HEAD
                                     $comment = isset($item['item_comment']) && trim($item['item_comment']) !== '' 
                                         ? htmlspecialchars($item['item_comment']) 
                                         : '';
@@ -98,13 +112,21 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
                                         echo '<span style="color: #6c757d;">Aucune</span>';
                                     }
                                     echo "</td>";
+=======
+                                    echo "<tr>";
+                                    echo "<td>" . htmlspecialchars($item['food_name']) . "</td>";
+>>>>>>> 4470edb (maj)
                                     echo "<td>" . (int)$item['quantity'] . "</td>";
                                     echo "<td>" . number_format($item['price'], 2) . "</td>";
                                     echo "<td>" . number_format($subtotal, 2) . "</td>";
                                     echo "</tr>";
                                 }
                             } else {
+<<<<<<< HEAD
                                 echo "<tr><td colspan='5'>Aucun article trouvé.</td></tr>";
+=======
+                                echo "<tr><td colspan='4'>Aucun article trouvé.</td></tr>";
+>>>>>>> 4470edb (maj)
                             }
                             ?>
                         </tbody>
@@ -119,4 +141,8 @@ $items_res = mysqli_query($link, "SELECT * FROM order_items WHERE order_id = $or
 <?php
 mysqli_close($link);
 include "footer.php";
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 4470edb (maj)

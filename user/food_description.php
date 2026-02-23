@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+<<<<<<< HEAD
 // ================================
 // SÉCURITÉ : Validation de session
 // ================================
@@ -15,6 +16,24 @@ $table_id = $_SESSION['table_id'];
 $table_name = $_SESSION['table_name'];
 $user_id = $_SESSION['user_id'];
 
+=======
+
+// Gérer l'ID de la table
+if (isset($_GET['table_id'])) {
+    $_SESSION['table_id'] = intval($_GET['table_id']);
+}
+$table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
+
+// 🔑 Gérer l'ID de l'utilisateur
+if (!isset($_SESSION['user_id'])) {
+    $_SESSION['user_id'] = uniqid('user_', true);
+}
+$user_id = $_SESSION['user_id'];
+
+// Le reste du code de la page...
+// ...
+
+>>>>>>> 4470edb (maj)
 include "header.php";
 include "../admin/connection.php";
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
@@ -26,13 +45,18 @@ if ($row = mysqli_fetch_array($res)) {
     $food_name = $row["food_name"];
     $food_description = $row["food_description"];
     $food_image = $row["food_image"];
+<<<<<<< HEAD
     $food_price = $row["food_original_price"];
+=======
+    $food_price = $row["food_discount_price"];
+>>>>>>> 4470edb (maj)
     $food_ingredients = $row["food_ingredients"];
     $food_category = $row["food_category"];
 }
 ?>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
 
+<<<<<<< HEAD
 <style>
 .comment-box {
     margin-top: 20px;
@@ -74,6 +98,10 @@ if ($row = mysqli_fetch_array($res)) {
     font-size: 12px;
 }
 </style>
+=======
+
+
+>>>>>>> 4470edb (maj)
 
 <title>Food Description</title>
 
@@ -104,13 +132,18 @@ if ($row = mysqli_fetch_array($res)) {
                                 <h2><?php echo $food_name; ?></h2>
                                 <div class="text"><?php echo $food_description; ?></div>
                                 <div class="text">Ingredients: <?php echo $food_ingredients; ?></div>
+<<<<<<< HEAD
                                 <div class="price">Price: <span><?php echo $food_price; ?> €</span></div>
+=======
+                                <div class="price">Price: <span><?php echo $food_price; ?></span></div>
+>>>>>>> 4470edb (maj)
 
                                 <div class="other-options clearfix">
                                     <div class="item-quantity">
                                         <label class="field-label">Quantity :</label>
                                         <input class="quantity-spinner" type="number" min="1" value="1" name="quantity" id="qty">
                                     </div>
+<<<<<<< HEAD
                                     
                                     <!-- Zone de commentaire -->
                                     <div class="comment-box">
@@ -128,6 +161,8 @@ if ($row = mysqli_fetch_array($res)) {
                                         <p></p>
                                         </div>
 
+=======
+>>>>>>> 4470edb (maj)
                                     <button type="button" class="theme-btn btn-style-five" onclick="add_to_cart('<?php echo $id; ?>', document.getElementById('qty').value);">
                                         <span class="txt">Order now</span>
                                     </button>
@@ -144,7 +179,11 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- End Shop Single Section -->
 
 <div style="margin-top: 30px; text-align: center;">
+<<<<<<< HEAD
     <a href="view_carte.php" 
+=======
+    <a href="view_carte.php?table_id=<?= $table_id ?>" 
+>>>>>>> 4470edb (maj)
        style="
          display: inline-block;
          background-color: #a41a13;
@@ -186,14 +225,24 @@ if ($row = mysqli_fetch_array($res)) {
                         </figure>
                         <div class="lower-content">
                             <h4>
+<<<<<<< HEAD
                                 <a href="food_description.php?id=<?php echo $row["id"]; ?>">
+=======
+                                <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>">
+>>>>>>> 4470edb (maj)
                                     <?php echo $row["food_name"]; ?>
                                 </a>
                             </h4>
                             <div class="text"><?php echo substr($row["food_description"], 0, 30); ?>...</div>
+<<<<<<< HEAD
                             <div class="price"><?php echo $row["food_original_price"]; ?> € </div>
                             <div class="lower-box">
                                 <a href="food_description.php?id=<?php echo $row["id"]; ?>" class="theme-btn btn-style-five">
+=======
+                            <div class="price"><?php echo $row["food_discount_price"]; ?> </div>
+                            <div class="lower-box">
+                                <a href="food_description.php?id=<?php echo $row["id"]; ?>&table_id=<?php echo $table_id; ?>" class="theme-btn btn-style-five">
+>>>>>>> 4470edb (maj)
                                     <span class="txt">Food description</span>
                                 </a>
                             </div>
@@ -212,6 +261,7 @@ if ($row = mysqli_fetch_array($res)) {
 <!-- JavaScript -->
 <script type="text/javascript">
     function add_to_cart(id, qty) {
+<<<<<<< HEAD
         var comment = document.getElementById('order-comment').value.trim();
         
         var xhr = new XMLHttpRequest();
@@ -262,6 +312,52 @@ if ($row = mysqli_fetch_array($res)) {
 </script>
 
 <?php
+=======
+    var table_id = <?php echo $table_id; ?>;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "add_to_cart.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            try {
+                var res = JSON.parse(xhr.responseText);
+
+                // Création d’une alerte visuelle similaire à index.php
+                let alertBox = document.createElement("div");
+                alertBox.className = "alert-notif";
+                alertBox.style.position = "fixed";
+                alertBox.style.top = "50%";
+                alertBox.style.left = "50%";
+                alertBox.style.transform = "translate(-50%, -50%)";
+                alertBox.style.padding = "15px 30px";
+                alertBox.style.color = "white";
+                alertBox.style.borderRadius = "8px";
+                alertBox.style.zIndex = 9999;
+                alertBox.style.background = res.success ? "#28a745" : "#dc3545";
+                alertBox.style.opacity = "0";
+                alertBox.style.transition = "opacity 0.5s ease";
+                alertBox.textContent = res.message;
+                document.body.appendChild(alertBox);
+
+                setTimeout(() => alertBox.style.opacity = "1", 10);
+                setTimeout(() => {
+                    alertBox.style.opacity = "0";
+                    setTimeout(() => alertBox.remove(), 500);
+                }, 1000);
+
+            } catch {
+                alert("Erreur lors de l'ajout au panier.");
+            }
+        }
+    };
+    xhr.send("id=" + encodeURIComponent(id) + "&qty=" + encodeURIComponent(qty) + "&table_id=" + encodeURIComponent(table_id));
+}
+</script>
+
+<?php
+// include "delivery_section.php";
+// include "service_section.php";
+>>>>>>> 4470edb (maj)
 include "footer.php";
 ?>
 
@@ -276,4 +372,8 @@ include "footer.php";
 <script src="assets/js/wow.js"></script>
 <script src="assets/js/jquery.bootstrap-touchspin.js"></script>
 <script src="assets/js/appear.js"></script>
+<<<<<<< HEAD
 <script src="assets/js/script.js"></script>
+=======
+<script src="assets/js/script.js"></script>
+>>>>>>> 4470edb (maj)

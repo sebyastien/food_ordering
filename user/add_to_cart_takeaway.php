@@ -4,6 +4,7 @@ include "../admin/connection.php";
 
 header('Content-Type: application/json');
 
+<<<<<<< HEAD
 $id = null;
 $qty = 1;
 // 💡 Nouvelle variable pour le commentaire
@@ -39,12 +40,34 @@ $product = $res->fetch_assoc();
 $stmt->close();
 
 // 🔒 Initialisation du panier pour l'utilisateur
+=======
+if (!isset($_POST['id']) || !isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Données manquantes.']);
+    exit;
+}
+
+$food_id = intval($_POST['id']);
+$user_id = $_SESSION['user_id'];
+$qty = intval($_POST['qty'] ?? 1);
+
+$res = mysqli_query($link, "SELECT * FROM food WHERE id = $food_id AND is_active = 1");
+if (!$row = mysqli_fetch_assoc($res)) {
+    echo json_encode(['success' => false, 'message' => 'Produit non trouvé.']);
+    exit;
+}
+
+$food_name = htmlspecialchars($row['food_name']);
+$food_price = htmlspecialchars($row['food_discount_price']);
+$food_image = htmlspecialchars($row['food_image']);
+
+>>>>>>> 4470edb (maj)
 $cart_key = 'cart_' . $user_id;
 
 if (!isset($_SESSION[$cart_key])) {
     $_SESSION[$cart_key] = [];
 }
 
+<<<<<<< HEAD
 // Rechercher le produit dans le panier de CET utilisateur
 $foundIndex = null;
 
@@ -81,4 +104,27 @@ if ($foundIndex !== null) {
 $cart_count = count($_SESSION[$cart_key]);
 echo json_encode(['success' => true, 'message' => $message, 'cart_count' => $cart_count]);
 exit;
+=======
+$found = false;
+foreach ($_SESSION[$cart_key] as $key => &$item) {
+    if ($item['id'] == $food_id) {
+        $item['qty'] += $qty;
+        $found = true;
+        break;
+    }
+}
+unset($item);
+
+if (!$found) {
+    $_SESSION[$cart_key][] = [
+        'id' => $food_id,
+        'name' => $food_name,
+        'price' => $food_price,
+        'image' => $food_image,
+        'qty' => $qty,
+    ];
+}
+
+echo json_encode(['success' => true, 'message' => 'Produit ajouté au panier pour la commande à emporter.']);
+>>>>>>> 4470edb (maj)
 ?>

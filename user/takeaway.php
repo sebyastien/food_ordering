@@ -9,6 +9,14 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['user_id'] = uniqid('user_', true);
 }
 
+<<<<<<< HEAD
+=======
+// Pour les commandes à emporter, nous pouvons définir une valeur par défaut
+// ou simplement omettre le concept de table.
+// Nous allons utiliser un identifiant spécial pour le panier à emporter si nécessaire
+// Pour l'instant, on n'ajoute pas de logique de table pour ce fichier.
+
+>>>>>>> 4470edb (maj)
 include "header.php";
 include "slider.php";
 include "../admin/connection.php";
@@ -16,6 +24,7 @@ include "../admin/connection.php";
 
 <title>Takeaway - Online Order</title>
 
+<<<<<<< HEAD
 <style>
 /* Styles responsive pour la grille de produits */
 @media screen and (max-width: 768px) {
@@ -259,6 +268,8 @@ include "../admin/connection.php";
 }
 </style>
 
+=======
+>>>>>>> 4470edb (maj)
 <section class="products-section">
     <div class="auto-container">
 
@@ -273,6 +284,7 @@ include "../admin/connection.php";
                 <ul class="filter-tabs filter-btns clearfix">
                     <li class="active filter" data-role="button" data-filter="all">All</li>
                     <?php
+<<<<<<< HEAD
                     $res = mysqli_query($link, "SELECT * FROM food_categories ORDER BY ordre ASC, id ASC");
                     while ($row = mysqli_fetch_assoc($res)) {
                         $category_name = htmlspecialchars($row["food_categories"]);
@@ -280,6 +292,14 @@ include "../admin/connection.php";
                         ?>
                         <li class="filter" data-role="button" data-filter=".<?= $category_class ?>">
                             <?= $category_name ?>
+=======
+                    $res = mysqli_query($link, "SELECT * FROM food_categories");
+                    while ($row = mysqli_fetch_assoc($res)) {
+                        $category_class = htmlspecialchars($row["food_categories"]);
+                        ?>
+                        <li class="filter" data-role="button" data-filter=".<?= $category_class ?>">
+                            <?= $category_class ?>
+>>>>>>> 4470edb (maj)
                         </li>
                         <?php
                     }
@@ -292,11 +312,18 @@ include "../admin/connection.php";
                 <?php
                 $res = mysqli_query($link, "SELECT * FROM food WHERE is_active = 1");
                 while ($row = mysqli_fetch_assoc($res)) {
+<<<<<<< HEAD
                     $category_name = htmlspecialchars($row["food_category"]);
                     $category = str_replace(' ', '-', $category_name);
                     $food_name = htmlspecialchars($row["food_name"]);
                     $food_desc = htmlspecialchars(substr($row["food_description"], 0, 30)) . "..";
                     $food_price = htmlspecialchars($row["food_original_price"]);
+=======
+                    $category = htmlspecialchars($row["food_category"]);
+                    $food_name = htmlspecialchars($row["food_name"]);
+                    $food_desc = htmlspecialchars(substr($row["food_description"], 0, 30)) . "..";
+                    $food_price = htmlspecialchars($row["food_discount_price"]);
+>>>>>>> 4470edb (maj)
                     $food_image = htmlspecialchars($row["food_image"]);
                     $food_id = intval($row["id"]);
                     ?>
@@ -307,21 +334,37 @@ include "../admin/connection.php";
                             </figure>
                             <div class="lower-content">
                                 <h4>
+<<<<<<< HEAD
                                     <a href="food_description_takeaway.php?id=<?= $food_id ?>">
+=======
+                                    <a href="food_description.php?id=<?= $food_id ?>">
+>>>>>>> 4470edb (maj)
                                         <?= $food_name ?>
                                     </a>
                                 </h4>
                                 <div class="text"><?= $food_desc ?></div>
+<<<<<<< HEAD
                                 <div class="price"><?= $food_price ?>€</div>
                                 <div class="custom-button-container">
                                     <a href="food_description_takeaway.php?id=<?= $food_id ?>"
                                        class="custom-btn custom-btn-description">
                                         <span class="txt">Voir détails</span>
+=======
+                                <div class="price"><?= $food_price ?></div>
+                                <div class="custom-button-container">
+                                    <a href="food_description.php?id=<?= $food_id ?>"
+                                       class="custom-btn custom-btn-description">
+                                        <span class="txt">Food Description</span>
+>>>>>>> 4470edb (maj)
                                     </a>
 
                                     <button class="custom-btn custom-btn-order add-to-cart-btn"
                                             data-id="<?= $food_id ?>">
+<<<<<<< HEAD
                                         <span class="txt">Commander</span>
+=======
+                                        <span class="txt">Order Now</span>
+>>>>>>> 4470edb (maj)
                                     </button>
                                 </div>
                             </div>
@@ -338,7 +381,11 @@ include "../admin/connection.php";
     </div>
 </section>
 
+<<<<<<< HEAD
 <div class="cart-button-container">
+=======
+<div style="margin-top: 30px; text-align: center;">
+>>>>>>> 4470edb (maj)
     <a href="view_carte_takeaway.php"
        style="
            display: inline-block;
@@ -354,10 +401,17 @@ include "../admin/connection.php";
        onmouseover="this.style.backgroundColor='black';"
        onmouseout="this.style.backgroundColor='#a41a13';"
     >
+<<<<<<< HEAD
         🛒 Voir le panier
     </a>
     <p style="margin-top: 10px; font-size: 16px; color: #555;">
         Consultez vos articles sélectionnés
+=======
+        Voir le panier
+    </a>
+    <p style="margin-top: 10px; font-size: 16px; color: #555;">
+        Cliquez ici pour consulter votre panier actuel.
+>>>>>>> 4470edb (maj)
     </p>
 </div>
 
@@ -386,9 +440,12 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
             alertBox.style.background = data.success ? "#28a745" : "#dc3545";
             alertBox.style.opacity = "0";
             alertBox.style.transition = "opacity 0.5s ease";
+<<<<<<< HEAD
             alertBox.style.maxWidth = "90%";
             alertBox.style.textAlign = "center";
             alertBox.style.fontSize = "0.95em";
+=======
+>>>>>>> 4470edb (maj)
             alertBox.textContent = data.message;
             document.body.appendChild(alertBox);
 
@@ -396,7 +453,11 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
             setTimeout(() => {
                 alertBox.style.opacity = "0";
                 setTimeout(() => alertBox.remove(), 500);
+<<<<<<< HEAD
             }, 2000);
+=======
+            }, 1000);
+>>>>>>> 4470edb (maj)
         })
         .catch(() => {
             alert("Une erreur est survenue, veuillez réessayer.");

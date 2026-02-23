@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Créer une page serveur qui recevra les commandes "terminées" et qui les renverrai vers les tables pour les servir
 
 Création dune page d'accueil admin pour que tout le monde y est OP.
@@ -7,3 +8,10 @@ enlever food original price
 Vérifier la page vitrine
 
 A voir pour suivre ma commande (mot de passe, création de compte, etc.)????
+=======
+Fait : modifier les ingrédients pour filtrer,, pourquoi pas ajouter les ingrédients direct dans la  page. Faire le même principe que la dscr
+
+créer une page serveur qui recevra les commandes "terminées" et qui les renverrai vers les tables pour les servir
+
+Création dune page d'accueil admin pour que tout le monde y est OP.
+>>>>>>> 4470edb (maj)

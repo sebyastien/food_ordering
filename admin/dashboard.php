@@ -3,7 +3,11 @@ session_start();
 
 include "connection.php";
 
+<<<<<<< HEAD
 $roles_autorises = ['admin', 'gérant'];
+=======
+$roles_autorises = ['admin', 'gerant'];
+>>>>>>> 4470edb (maj)
 include "auth_check.php";
 
 include "header.php";

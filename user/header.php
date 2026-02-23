@@ -16,15 +16,21 @@ if ($order_type === 'takeaway') {
 } else {
     // Si c'est une commande de type 'table', on utilise le table_id
     $table_id = isset($_SESSION['table_id']) ? intval($_SESSION['table_id']) : 0;
+<<<<<<< HEAD
     // CORRECTION : Pas de paramètre table_id dans l'URL pour Home
     $home_link = 'index.php';
     // CORRECTION : Pas de paramètre table_id pour le panier non plus car la session gère déjà tout
     $cart_link = 'view_carte.php';
+=======
+    $home_link = 'index.php?table_id=' . $table_id;
+    $cart_link = 'view_carte.php?table_id=' . $table_id;
+>>>>>>> 4470edb (maj)
 }
 
 
 // Calcul du nombre total d'articles dans le panier
 $total_items = 0;
+<<<<<<< HEAD
 
 if ($order_type === 'takeaway') {
     // Mode takeaway : utilise l'ancien système
@@ -46,6 +52,15 @@ if ($order_type === 'takeaway') {
             if (isset($item['qty_total'])) {
                 $total_items += intval($item['qty_total']);
             }
+=======
+// On utilise le bon nom de panier basé sur le mode
+$cart_key = ($order_type === 'takeaway') ? 'cart_' . ($_SESSION['user_id'] ?? '') : 'cart';
+
+if (isset($_SESSION[$cart_key]) && is_array($_SESSION[$cart_key])) {
+    foreach ($_SESSION[$cart_key] as $item) {
+        if (isset($item['qty_total'])) {
+            $total_items += intval($item['qty_total']);
+>>>>>>> 4470edb (maj)
         }
     }
 }
@@ -63,7 +78,11 @@ if ($order_type === 'takeaway') {
     <link href="assets/vendors/revolution/css/navigation.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
     <link href="assets/css/style.css?v=<?= time() ?>" rel="stylesheet">
+<<<<<<< HEAD
     <link href="assets/css/responsive.css?v=<?php echo filemtime('assets/css/responsive.css'); ?>" rel="stylesheet">
+=======
+    <link href="assets/css/responsive.css" rel="stylesheet">
+>>>>>>> 4470edb (maj)
 
     <link rel="shortcut icon" href="assets/images/logo-02.png" type="image/x-icon">
     <link rel="icon" href="assets/images/logo-02.png" type="image/x-icon">
@@ -74,6 +93,7 @@ if ($order_type === 'takeaway') {
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<<<<<<< HEAD
     
     <style>
 
@@ -126,6 +146,8 @@ if ($order_type === 'takeaway') {
             }
         }
     </style>
+=======
+>>>>>>> 4470edb (maj)
 </head>
 
 <body>
@@ -135,6 +157,7 @@ if ($order_type === 'takeaway') {
         <div class="preloader"></div>
 
         <header class="main-header">
+<<<<<<< HEAD
             <div class="header-upper">
                 <div class="auto-container clearfix">
                     <div class="top-left">    
@@ -144,6 +167,31 @@ if ($order_type === 'takeaway') {
                         <div class="option-list">
                             <div class="cart-btn">
                                 
+=======
+            <div class="header-top" style="background-color:#f2e39c; color:black">
+                <div class="auto-container clearfix">
+                    <div class="top-left">
+                        <ul class="info-list">
+                            <li>
+                                <a href="mailto:info@abc.co.in" style="color: black">
+                                    <span class="icon far fa-envelope"></span> info@abc.co.in
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="top-right clearfix">
+                        <ul class="social-box">
+                            <li><a href="#" style="color: black"><span class="fa fa-user-alt"></span></a></li>
+                        </ul>
+
+                        <div class="option-list">
+                            <div class="cart-btn">
+                                <a href="<?= $cart_link ?>" class="icon flaticon-shopping-cart" style="color: black">
+                                    <span class="total-cart" style="background-color: #a40301; color: white;">
+                                        <?php echo $total_items > 0 ? $total_items : ''; ?>
+                                    </span>
+                                </a>
+>>>>>>> 4470edb (maj)
                             </div>
                         </div>
                     </div>
@@ -151,6 +199,7 @@ if ($order_type === 'takeaway') {
             </div>
             <div class="header-upper">
                 <div class="inner-container">
+<<<<<<< HEAD
                     <div class="auto-container clearfix header-mobile-content">
     <div class="logo-outer">
         <div class="logo"> <a href="<?= $home_link ?>">
@@ -158,6 +207,16 @@ if ($order_type === 'takeaway') {
             </a>
         </div>
     </div>
+=======
+                    <div class="auto-container clearfix">
+                        <div class="logo-outer">
+                            <div class="logo" style="margin-top: -20px;">
+                                <a href="<?= $home_link ?>">
+                                    <img src="assets/images/logo-02.png" alt="" title="">
+                                </a>
+                            </div>
+                        </div>
+>>>>>>> 4470edb (maj)
 
                         <div class="nav-outer clearfix">
                             <nav class="main-menu navbar-expand-md navbar-light">
@@ -185,6 +244,7 @@ if ($order_type === 'takeaway') {
                                     <span><a href="tel:1800-123-4567">1800 123 4567</a></span>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             <div class="option-list">
                                 <div class="cart-btn">
                                     <a href="<?= $cart_link ?>" title="Shopping Cart">
@@ -193,6 +253,10 @@ if ($order_type === 'takeaway') {
                                 </div>
                             </div>
                             </div>
+=======
+
+                        </div>
+>>>>>>> 4470edb (maj)
                     </div>
                 </div>
             </div>
@@ -200,11 +264,16 @@ if ($order_type === 'takeaway') {
                 <div class="auto-container clearfix">
                     <div class="logo pull-left">
                         <a href="<?= $home_link ?>" class="img-responsive">
+<<<<<<< HEAD
                             <img src="assets/images/logo-02.png" alt="" title="" height="90" width="90"> 
+=======
+                            <img src="assets/images/logo-02.png" alt="" title="" height="90" width="90" style="margin-top: -10px;">
+>>>>>>> 4470edb (maj)
                         </a>
                     </div>
 
                     <div class="right-col pull-right">
+<<<<<<< HEAD
                         <div class="option-list pull-left" style="margin-right: 15px;">
                             
                         </div>
@@ -216,6 +285,16 @@ if ($order_type === 'takeaway') {
                                     <span class="icon flaticon-menu"></span> 
                                 </button>
                             </div>
+=======
+                        <nav class="main-menu navbar-expand-md">
+                            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+>>>>>>> 4470edb (maj)
 
                             <div class="navbar-collapse collapse clearfix" id="navbarSupportedContent1">
                                 <ul class="navigation clearfix">
@@ -229,6 +308,7 @@ if ($order_type === 'takeaway') {
                         </nav></div>
                 </div>
             </div>
+<<<<<<< HEAD
         </header>
 
     <script src="assets/js/jquery.js"></script>
@@ -275,3 +355,6 @@ if ($order_type === 'takeaway') {
             });
         });
     </script>
+=======
+            </header>
+>>>>>>> 4470edb (maj)

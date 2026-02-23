@@ -23,6 +23,7 @@ if (!$result) {
     <meta charset="UTF-8">
     <title>Archives des commandes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Style pour les commentaires */
@@ -34,6 +35,8 @@ if (!$result) {
             margin-top: 3px;
         }
     </style>
+=======
+>>>>>>> 4470edb (maj)
 </head>
 <body>
 <div class="container mt-4">
@@ -85,12 +88,16 @@ if (!$result) {
                         <td><?= $order['order_number'] ?></td>
                         <td><?= htmlspecialchars($order['status']) ?></td>
                         <td>
+<<<<<<< HEAD
                             <button class="btn btn-info btn-sm details-btn" 
                                     data-id="<?= $order['id'] ?>"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#orderDetailsModal">
                                 Détails
                             </button>
+=======
+                            <button class="btn btn-info btn-sm details-btn" data-id="<?= $order['id'] ?>">Détails</button>
+>>>>>>> 4470edb (maj)
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -115,7 +122,10 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th>Produit</th>
+<<<<<<< HEAD
                             <th>Instructions spéciales</th>
+=======
+>>>>>>> 4470edb (maj)
                             <th>Quantité</th>
                             <th>Prix unitaire (€)</th>
                         </tr>
@@ -134,6 +144,7 @@ if (!$result) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+<<<<<<< HEAD
     const orderDetailsModalElement = document.getElementById('orderDetailsModal');
     const orderDetailsTableBody = document.getElementById('orderDetailsTableBody');
     const orderIdModal = document.getElementById('orderIdModal');
@@ -180,6 +191,45 @@ document.addEventListener('DOMContentLoaded', function() {
     // Nettoyer le contenu à la fermeture
     orderDetailsModalElement.addEventListener('hidden.bs.modal', function () {
         orderDetailsTableBody.innerHTML = '';
+=======
+    const orderDetailsModal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+    const orderDetailsTableBody = document.getElementById('orderDetailsTableBody');
+    const orderIdModal = document.getElementById('orderIdModal');
+
+    document.querySelectorAll('.details-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const orderId = this.dataset.id;
+            orderIdModal.textContent = orderId;
+            orderDetailsTableBody.innerHTML = '<tr><td colspan="3" class="text-center">Chargement...</td></tr>';
+            
+            fetch(`fetch_order_details.php?id=${orderId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.details.length > 0) {
+                        let detailsHtml = '';
+                        data.details.forEach(detail => {
+                            detailsHtml += `
+                                <tr>
+                                    <td>${detail.food_name}</td>
+                                    <td>${detail.quantity}</td>
+                                    <td>${detail.price}</td>
+                                </tr>
+                            `;
+                        });
+                        orderDetailsTableBody.innerHTML = detailsHtml;
+                    } else {
+                        orderDetailsTableBody.innerHTML = '<tr><td colspan="3" class="text-center">Aucun détail trouvé.</td></tr>';
+                    }
+                    orderDetailsModal.show();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des détails:', error);
+                    orderDetailsTableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger">Erreur de chargement des détails.</td></tr>';
+                    orderDetailsModal.show();
+                });
+        });
+>>>>>>> 4470edb (maj)
     });
 });
 </script>

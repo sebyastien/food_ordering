@@ -30,13 +30,18 @@ if (!$order) {
 }
 
 // Récupérer les articles de la commande
+<<<<<<< HEAD
 // 💡 IMPORTANT : On suppose que 'item_comment' est présent dans la table 'order_items'
 $stmt_items = $link->prepare("SELECT food_name, quantity, price, item_comment FROM order_items WHERE order_id = ?");
+=======
+$stmt_items = $link->prepare("SELECT * FROM order_items WHERE order_id = ?");
+>>>>>>> 4470edb (maj)
 $stmt_items->bind_param("i", $order['id']);
 $stmt_items->execute();
 $order_items = $stmt_items->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt_items->close();
 
+<<<<<<< HEAD
 
 // HTML du PDF
 $html = '
@@ -47,12 +52,23 @@ $html = '
         <title>Facture - ' . htmlspecialchars($order_number) . '</title>
         <style>
             body { font-family: "DejaVu Sans", sans-serif; }
+=======
+// Début de la construction du HTML pour la facture
+$html = '
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
+>>>>>>> 4470edb (maj)
             .invoice-box {
                 max-width: 800px;
                 margin: auto;
                 padding: 30px;
                 border: 1px solid #eee;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+<<<<<<< HEAD
                 font-size: 14px;
                 line-height: 24px;
                 color: #555;
@@ -106,22 +122,50 @@ $html = '
                 display: block;
                 margin-top: 2px;
             }
+=======
+                font-size: 16px;
+                line-height: 24px;
+                color: #555;
+            }
+            .invoice-box table { width: 100%; line-height: inherit; text-align: left; }
+            .invoice-box table td { padding: 5px; vertical-align: top; }
+            .invoice-box table tr td:nth-child(2) { text-align: right; }
+            .invoice-box table tr.top table td { padding-bottom: 20px; }
+            .invoice-box table tr.information table td { padding-bottom: 40px; }
+            .invoice-box table tr.heading td { background: #eee; border-bottom: 1px solid #ddd; font-weight: bold; }
+            .invoice-box table tr.details td { padding-bottom: 20px; }
+            .invoice-box table tr.item td { border-bottom: 1px solid #eee; }
+            .invoice-box table tr.item.last td { border-bottom: none; }
+            .invoice-box table tr.total td:nth-child(2) { border-top: 2px solid #eee; font-weight: bold; }
+>>>>>>> 4470edb (maj)
         </style>
     </head>
     <body>
     <div class="invoice-box">
+<<<<<<< HEAD
         <table cellpadding="0" cellspacing="0">
+=======
+        <table>
+>>>>>>> 4470edb (maj)
             <tr class="top">
                 <td colspan="2">
                     <table>
                         <tr>
                             <td class="title">
+<<<<<<< HEAD
                                 Facture
                             </td>
                             <td>
                                 Facture #: ' . htmlspecialchars($order_number) . '<br>
                                 Date de commande: ' . date('d/m/Y', strtotime($order['order_date'])) . '<br>
                                 Statut: ' . htmlspecialchars($order['status'] ?? 'En attente') . '
+=======
+                                <h1>Facture</h1>
+                            </td>
+                            <td>
+                                Numéro de facture : ' . htmlspecialchars($order['order_number']) . '<br>
+                                Date : ' . date('d/m/Y', strtotime($order['created_at'])) . '
+>>>>>>> 4470edb (maj)
                             </td>
                         </tr>
                     </table>
@@ -138,8 +182,12 @@ $html = '
                             </td>
                             <td>
                                 Nom du client : ' . htmlspecialchars($order['customer_name']) . '<br>
+<<<<<<< HEAD
                                 Mode de paiement : ' . htmlspecialchars($order['payment_method']) . '<br>
                                 Table N° : ' . htmlspecialchars($order['table_id']) . '
+=======
+                                Mode de paiement : ' . htmlspecialchars($order['payment_method']) . '
+>>>>>>> 4470edb (maj)
                             </td>
                         </tr>
                     </table>
@@ -150,6 +198,7 @@ $html = '
                 <td>Prix</td>
             </tr>';
 
+<<<<<<< HEAD
 // 💡 Boucle avec le commentaire
 foreach ($order_items as $item) {
     $comment_html = '';
@@ -165,6 +214,14 @@ foreach ($order_items as $item) {
               </tr>';
 }
 // Fin de la boucle
+=======
+foreach ($order_items as $item) {
+    $html .= '<tr class="item">
+                <td>' . htmlspecialchars($item['food_name']) . ' (x' . intval($item['quantity']) . ')</td>
+                <td>' . number_format(floatval($item['price']), 2) . ' €</td>
+              </tr>';
+}
+>>>>>>> 4470edb (maj)
 
 $html .= '<tr class="total">
                 <td></td>
@@ -176,12 +233,21 @@ $html .= '<tr class="total">
     </html>';
 
 $options = new Options();
+<<<<<<< HEAD
 // 💡 IMPORTANT : Utilisation d'une police de caractères qui gère les accents pour Dompdf
 $options->set('defaultFont', 'DejaVu Sans'); 
+=======
+$options->set('defaultFont', 'DejaVu Sans');
+>>>>>>> 4470edb (maj)
 $dompdf = new Dompdf($options);
 $dompdf->loadHtml($html);
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 $file_name = 'Facture_' . $order_number . '.pdf';
+<<<<<<< HEAD
 $dompdf->stream($file_name, ["Attachment" => 1]); // 1 pour télécharger, 0 pour afficher
 ?>
+=======
+$dompdf->stream($file_name, ["Attachment" => true]);
+exit;
+>>>>>>> 4470edb (maj)

@@ -1,10 +1,22 @@
 <?php
 session_start();
 
+<<<<<<< HEAD
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 if (!$user_id || !isset($_SESSION['cart_' . $user_id]) || empty($_SESSION['cart_' . $user_id])) {
     header("Location: takeaway.php");
+=======
+// 🔑 Ajout des lignes pour l'affichage des erreurs
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+if (!$user_id || !isset($_SESSION['cart_' . $user_id]) || empty($_SESSION['cart_' . $user_id])) {
+    header("Location: index.php");
+>>>>>>> 4470edb (maj)
     exit("Erreur : ID d'utilisateur manquant ou panier vide. Redirection en cours.");
 }
 
@@ -44,20 +56,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $order_type = 'takeaway';
 
         $stmt = $link->prepare("INSERT INTO orders (order_number, customer_name, payment_method, total_price, user_id, order_type) VALUES (?, ?, ?, ?, ?, ?)");
+<<<<<<< HEAD
         $stmt->bind_param("sssdss", $order_number, $client_name, $payment_method, $total_confirm, $user_id, $order_type);
+=======
+        
+        // 🔑 Correction de la ligne suivante
+        $stmt->bind_param("sssdss", $order_number, $client_name, $payment_method, $total_confirm, $user_id, $order_type);
+        
+>>>>>>> 4470edb (maj)
         $stmt->execute();
         $order_id = $stmt->insert_id;
         $stmt->close();
 
+<<<<<<< HEAD
         $stmt_item = $link->prepare("INSERT INTO order_items (order_id, food_name, quantity, price, item_comment) VALUES (?, ?, ?, ?, ?)");
         
+=======
+        $stmt_item = $link->prepare("INSERT INTO order_items (order_id, food_name, quantity, price) VALUES (?, ?, ?, ?)");
+>>>>>>> 4470edb (maj)
         foreach ($cart_items as $item) {
             $name = htmlspecialchars($item['name']);
             $qty = intval($item['qty']);
             $price = floatval($item['price']);
+<<<<<<< HEAD
             $comment = isset($item['comment']) ? htmlspecialchars(trim($item['comment'])) : '';
             
             $stmt_item->bind_param("isids", $order_id, $name, $qty, $price, $comment);
+=======
+            $stmt_item->bind_param("isid", $order_id, $name, $qty, $price);
+>>>>>>> 4470edb (maj)
             $stmt_item->execute();
         }
         $stmt_item->close();
@@ -78,12 +105,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                       <hr style='margin:25px 0;'>
                       <h3>Détail de la commande :</h3>";
 
+<<<<<<< HEAD
         echo "<div style='margin-bottom: 20px;'>";
+=======
+        echo "<table style='width:100%; border-collapse: collapse; font-size:1rem;'>
+                  <thead>
+                      <tr style='background:#a40301; color:#fff;'>
+                          <th style='padding:10px; text-align:left;'>Produit</th>
+                          <th style='padding:10px; text-align:center;'>Quantité</th>
+                          <th style='padding:10px; text-align:right;'>Prix Unitaire (€)</th>
+                          <th style='padding:10px; text-align:right;'>Total Ligne (€)</th>
+                      </tr>
+                  </thead>
+                  <tbody>";
+
+>>>>>>> 4470edb (maj)
         $total_confirm = 0;
         foreach ($cart_items as $item) {
             $name = htmlspecialchars($item['name']);
             $qty = intval($item['qty']);
             $price = floatval($item['price']);
+<<<<<<< HEAD
             $comment = htmlspecialchars($item['comment'] ?? ''); 
             $total_line = $qty * $price;
             $total_confirm += $total_line;
@@ -116,6 +158,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                   <p id='download-status' style='color: #28a745; font-weight: 600; margin-bottom: 10px;'>Téléchargement de votre facture en cours...</p>
                   <a href='facture.php?order_number=$order_number' style='display:block; background:#007bff; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700; margin-bottom:10px;'>
                       Télécharger à nouveau la facture (PDF)
+=======
+            $total_line = $qty * $price;
+            $total_confirm += $total_line;
+
+            echo "<tr>
+                      <td style='padding:8px; border-bottom:1px solid #ddd;'>$name</td>
+                      <td style='padding:8px; border-bottom:1px solid #ddd; text-align:center;'>$qty</td>
+                      <td style='padding:8px; border-bottom:1px solid #ddd; text-align:right;'>" . number_format($price, 2) . "</td>
+                      <td style='padding:8px; border-bottom:1px solid #ddd; text-align:right;'>" . number_format($total_line, 2) . "</td>
+                  </tr>";
+        }
+
+        echo "</tbody>
+                  <tfoot>
+                  <tr>
+                      <td colspan='3' style='padding:10px; font-weight:700; text-align:right; border-top:2px solid #a40301;'>Montant Total :</td>
+                      <td style='padding:10px; font-weight:700; text-align:right; border-top:2px solid #a40301; color:#a40301;'>" . number_format($total_confirm, 2) . " €</td>
+                  </tr>
+                  </tfoot>
+              </table>";
+
+        echo "<div style='text-align: center; margin-top: 35px;'>
+                  <p>Gardez ce numéro pour suivre votre commande à tout moment : <strong>" . htmlspecialchars($order_number) . "</strong></p>
+                  <a href='facture.php?order_number=$order_number' style='display:block; background:#007bff; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700; margin-bottom:10px;'>
+                      Télécharger la facture (PDF)
+>>>>>>> 4470edb (maj)
                   </a>
                   <a href='track_order.php?order_number=$order_number' style='display:block; background:#6c757d; color:#fff; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:700; margin-bottom:10px;'>
                       Suivre ma commande
@@ -127,6 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           </div>
           </section>";
 
+<<<<<<< HEAD
         echo "<script>
                 window.onload = function() {
                     var iframe = document.createElement('iframe');
@@ -143,6 +212,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 };
               </script>";
 
+=======
+>>>>>>> 4470edb (maj)
         include "footer.php";
         exit;
     }
@@ -195,6 +266,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <h3>Résumé de la commande :</h3>
         <ul style="list-style:none; padding-left:0; font-size:1rem;">
+<<<<<<< HEAD
             <?php foreach ($cart_for_this_user as $item): 
                 $comment = htmlspecialchars($item['comment'] ?? '');
             ?>
@@ -205,6 +277,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                              Instructions : <?= $comment ?>
                         </span>
                     <?php endif; ?>
+=======
+            <?php foreach ($cart_for_this_user as $item): ?>
+                <li style="padding: 8px 0; border-bottom:1px solid #ddd;">
+                    <?= htmlspecialchars($item['name']) ?> — Quantité : <?= intval($item['qty']) ?> — Prix unitaire : <?= number_format(floatval($item['price']), 2) ?> €
+>>>>>>> 4470edb (maj)
                 </li>
             <?php endforeach; ?>
         </ul>

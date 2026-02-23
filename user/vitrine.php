@@ -15,9 +15,15 @@ include "header.php";
 
     .hero-section {
         position: relative;
+<<<<<<< HEAD
         height: 80vh;
         background-color: #a41a13;
         color: white;
+=======
+        height: 80vh; /* 80% de la hauteur de la fenêtre */
+        background-color: #a41a13; /* Fond rouge */
+        color: white; /* Texte en blanc */
+>>>>>>> 4470edb (maj)
         text-align: center;
         display: flex;
         flex-direction: column;
@@ -32,13 +38,20 @@ include "header.php";
         left: 0;
         width: 100%;
         height: 100%;
+<<<<<<< HEAD
         background-color: rgba(0, 0, 0, 0.2);
+=======
+        background-color: rgba(0, 0, 0, 0.2); /* Overlay légèrement sombre pour la lisibilité */
+>>>>>>> 4470edb (maj)
     }
     
     .hero-content {
         position: relative;
         z-index: 1;
+<<<<<<< HEAD
         padding: 0 20px;
+=======
+>>>>>>> 4470edb (maj)
     }
 
     .hero-content h1 {
@@ -118,6 +131,7 @@ include "header.php";
     .cta-section button:hover {
         background-color: #000;
     }
+<<<<<<< HEAD
 
     .order-options {
         display: flex;
@@ -247,6 +261,8 @@ include "header.php";
             font-size: 1.2em;
         }
     }
+=======
+>>>>>>> 4470edb (maj)
 </style>
 
 <div class="vitrine-page">
@@ -268,8 +284,21 @@ include "header.php";
     <section class="cta-section">
         <h2>Prêt à commander ?</h2>
         <p>Choisissez comment vous souhaitez passer votre commande.</p>
+<<<<<<< HEAD
         <div class="order-options">
             <div class="order-option">
+=======
+        <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px;">
+            <div>
+                <h4>Commander à table</h4>
+                <p>Entrez le numéro de votre table pour accéder au menu.</p>
+                <form action="index.php" method="GET">
+                    <input type="text" id="table_id" name="table_id" placeholder="Ex: 5" required>
+                    <button type="submit">Accéder au menu</button>
+                </form>
+            </div>
+            <div style="border-left: 1px solid white; padding-left: 30px;">
+>>>>>>> 4470edb (maj)
                 <h4>Commander à domicile</h4>
                 <p>Commandez en ligne et faites-vous livrer chez vous.</p>
                 <form action="takeaway.php" method="GET">
@@ -283,4 +312,8 @@ include "header.php";
 
 <?php
 include "footer.php";
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 4470edb (maj)

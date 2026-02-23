@@ -24,7 +24,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit1"])) {
 
         ?>
         <script type="text/javascript">
+<<<<<<< HEAD
             window.location = "acceuil.php";
+=======
+            window.location = "dashboard.php";
+>>>>>>> 4470edb (maj)
         </script>
         <?php
     } else {
